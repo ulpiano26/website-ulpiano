@@ -6,6 +6,15 @@ import { usePathname } from "next/navigation";
 import { CheckCircle2, Calendar, Monitor, Clock, ShieldCheck, ChevronDown, ArrowRight, Shield } from "lucide-react";
 import ConsentCheckbox from "@/components/forms/ConsentCheckbox";
 import { localeFromPathname } from "@/lib/legal/consent-texts";
+import {
+  DEMO_FIELD_MAX_LENGTH,
+  DEMO_FIELD_ORDER,
+  submitDemoRequest,
+  validateDemoForm,
+  type DemoFieldErrors,
+  type DemoFieldName,
+  type DemoFormValues,
+} from "@/lib/demo-request";
 
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -72,9 +81,9 @@ const COPY = {
       "Por videoconferencia",
       "25 min, sin compromiso",
     ],
-    successTitle: "Sesión solicitada",
+    successTitle: "Solicitud recibida",
     successBody:
-      "Recibirás un email en menos de 24h con los horarios disponibles para elegir el que mejor te convenga.",
+      "Gracias. Nos pondremos en contacto contigo en menos de 24 horas laborables para acordar el día y la hora de tu sesión.",
     meanwhileTitle: "¿Mientras tanto?",
     meanwhileBody: "Explora en detalle todas las soluciones que verás durante la sesión.",
     seeSolutions: "Ver soluciones",
@@ -85,10 +94,22 @@ const COPY = {
     email: "Email profesional",
     company: "Despacho / Empresa",
     companyPlaceholder: "Nombre del despacho",
-    sending: "Procesando...",
+    sending: "Enviando…",
     submit: "Ver Ulpiano en acción",
     noCommitment: "Sin compromiso · No pedimos datos de pago",
-    formError: "Ha ocurrido un error. Inténtalo de nuevo.",
+    fieldErrors: {
+      required: {
+        fullName: "Escribe tu nombre completo.",
+        email: "Escribe tu correo electrónico.",
+        company: "Escribe el nombre de tu despacho o empresa.",
+      },
+      invalidEmail: "Introduce un correo válido, por ejemplo nombre@despacho.es.",
+      tooLong: "Este campo admite un máximo de 255 caracteres.",
+    },
+    serverInvalid: "Algún dato no es válido. Revisa los campos e inténtalo de nuevo.",
+    rateLimited: "Has hecho demasiados intentos seguidos. Espera unos minutos y vuelve a intentarlo.",
+    genericError: "No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos.",
+    retry: "Reintentar",
     quote1:
       "Desde que usamos Ulpiano, la preparación de un expediente sucesorio nos lleva la mitad de tiempo. Y el cliente entiende perfectamente lo que paga.",
     quote1Author: "— Marta R., Abogada | Despacho en Girona",
@@ -172,9 +193,9 @@ const COPY = {
       "Per videoconferència",
       "25 min, sense compromís",
     ],
-    successTitle: "Sessió sol·licitada",
+    successTitle: "Sol·licitud rebuda",
     successBody:
-      "Rebràs un correu en menys de 24 h amb els horaris disponibles per triar el que millor et vagi.",
+      "Gràcies. Ens posarem en contacte amb tu en menys de 24 hores laborables per acordar el dia i l'hora de la sessió.",
     meanwhileTitle: "Mentrestant?",
     meanwhileBody: "Explora en detall totes les solucions que veuràs durant la sessió.",
     seeSolutions: "Veure solucions",
@@ -185,10 +206,22 @@ const COPY = {
     email: "Correu professional",
     company: "Despatx / Empresa",
     companyPlaceholder: "Nom del despatx",
-    sending: "Processant...",
+    sending: "Enviant…",
     submit: "Veure Ulpiano en acció",
     noCommitment: "Sense compromís · No demanem dades de pagament",
-    formError: "S'ha produït un error. Torna-ho a provar.",
+    fieldErrors: {
+      required: {
+        fullName: "Escriu el teu nom complet.",
+        email: "Escriu el teu correu electrònic.",
+        company: "Escriu el nom del teu despatx o empresa.",
+      },
+      invalidEmail: "Introdueix un correu vàlid, per exemple nom@despatx.cat.",
+      tooLong: "Aquest camp admet un màxim de 255 caràcters.",
+    },
+    serverInvalid: "Alguna dada no és vàlida. Revisa els camps i torna-ho a provar.",
+    rateLimited: "Has fet massa intents seguits. Espera uns minuts i torna-ho a provar.",
+    genericError: "No hem pogut enviar la teva sol·licitud. Torna-ho a provar d'aquí a uns minuts.",
+    retry: "Torna-ho a provar",
     quote1:
       "Des que fem servir Ulpiano, la preparació d'un expedient successori ens porta la meitat de temps. I el client entén perfectament el que paga.",
     quote1Author: "— Marta R., Advocada | Despatx a Girona",
@@ -269,82 +302,193 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
+type SubmitFeedback = "none" | "invalid" | "rateLimited" | "failed";
+
+function pushDataLayerEvent(event: Record<string, unknown>) {
+  (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push(event);
+}
+
+const INITIAL_VALUES: DemoFormValues = { fullName: "", email: "", company: "" };
+
+const FIELD_INPUT_ID: Record<DemoFieldName, string> = {
+  fullName: "name",
+  email: "email",
+  company: "company",
+};
+
+const CONSENT_INPUT_ID = "consent-processing-demo";
+
+type FormFieldConfig = {
+  fieldName: DemoFieldName;
+  inputId: string;
+  labelKey: "name" | "email" | "company";
+  type: "text" | "email";
+  placeholderKey?: "namePlaceholder" | "companyPlaceholder";
+  placeholder?: string;
+  autoComplete: string;
+};
+
+const FORM_FIELDS: readonly FormFieldConfig[] = [
+  {
+    fieldName: "fullName",
+    inputId: FIELD_INPUT_ID.fullName,
+    labelKey: "name",
+    type: "text",
+    placeholderKey: "namePlaceholder",
+    autoComplete: "name",
+  },
+  {
+    fieldName: "email",
+    inputId: FIELD_INPUT_ID.email,
+    labelKey: "email",
+    type: "email",
+    placeholder: "maria@despacho.com",
+    autoComplete: "email",
+  },
+  {
+    fieldName: "company",
+    inputId: FIELD_INPUT_ID.company,
+    labelKey: "company",
+    type: "text",
+    placeholderKey: "companyPlaceholder",
+    autoComplete: "organization",
+  },
+];
+
+const INPUT_CLASS_NAME =
+  "w-full px-4 py-3.5 bg-slate-50 border rounded-xl text-[15px] text-ink placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all";
+const INPUT_VALID_CLASS_NAME =
+  "border-slate-200 focus:ring-emerald-500/20 focus:border-emerald-500";
+const INPUT_INVALID_CLASS_NAME = "border-red-400 focus:ring-red-500/20 focus:border-red-500";
+
 /* ─── Main ─── */
 
 export function DemoClient() {
   const revealRef = useReveal();
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
-  const [formError, setFormError] = useState("");
+  const [values, setValues] = useState<DemoFormValues>(INITIAL_VALUES);
+  const [fieldErrors, setFieldErrors] = useState<DemoFieldErrors>({});
+  const [feedback, setFeedback] = useState<SubmitFeedback>("none");
+  const [honeypotValue, setHoneypotValue] = useState("");
   const [consentProcessing, setConsentProcessing] = useState(false);
-  const [consentMarketing, setConsentMarketing] = useState(false);
   const [consentError, setConsentError] = useState(false);
   const formStartedRef = useRef(false);
+  // A ref (not state) so that two very fast clicks cannot both pass the guard before a re-render.
+  const isSubmittingRef = useRef(false);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const locale = localeFromPathname(usePathname() ?? "");
   const t = COPY[locale];
 
-  const dl = useRef(
-    () => (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer,
-  );
+  useEffect(() => {
+    if (submitted) successHeadingRef.current?.focus();
+  }, [submitted]);
 
   function handleFormStarted() {
     if (formStartedRef.current) return;
     formStartedRef.current = true;
-    dl.current()?.push({ event: "demo_form_started" });
+    pushDataLayerEvent({ event: "demo_form_started" });
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!consentProcessing) {
-      setConsentError(true);
+  function handleValueChange(fieldName: DemoFieldName, value: string) {
+    setValues((previous) => ({ ...previous, [fieldName]: value }));
+    if (fieldErrors[fieldName]) {
+      setFieldErrors((previous) => ({ ...previous, [fieldName]: undefined }));
+    }
+  }
+
+  function getFieldErrorMessage(fieldName: DemoFieldName): string | undefined {
+    const errorCode = fieldErrors[fieldName];
+    if (!errorCode) return undefined;
+    if (errorCode === "required") return t.fieldErrors.required[fieldName];
+    return t.fieldErrors[errorCode];
+  }
+
+  function focusElementById(elementId: string) {
+    document.getElementById(elementId)?.focus();
+  }
+
+  function resetForm() {
+    setValues(INITIAL_VALUES);
+    setFieldErrors({});
+    setFeedback("none");
+    setHoneypotValue("");
+    setConsentProcessing(false);
+    setConsentError(false);
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (isSubmittingRef.current) return;
+
+    // Honeypot: real people never see this field. Pretend it worked and send nothing.
+    if (honeypotValue.trim() !== "") {
+      resetForm();
+      setSubmitted(true);
       return;
     }
-    setSending(true);
-    setFormError("");
-    setConsentError(false);
 
-    const form = e.currentTarget;
-    const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      company: (form.elements.namedItem("company") as HTMLInputElement).value,
-      consentProcessing,
-      consentMarketing,
-      locale,
-      formId: "demo" as const,
-      sourceUrl: window.location.href,
-    };
+    const validationErrors = validateDemoForm(values);
+    const firstInvalidField = DEMO_FIELD_ORDER.find((fieldName) => validationErrors[fieldName]);
+    const isConsentMissing = !consentProcessing;
+
+    setFieldErrors(validationErrors);
+    setConsentError(isConsentMissing);
+    setFeedback("none");
+
+    if (firstInvalidField || isConsentMissing) {
+      focusElementById(firstInvalidField ? FIELD_INPUT_ID[firstInvalidField] : CONSENT_INPUT_ID);
+      return;
+    }
+
+    isSubmittingRef.current = true;
+    setSending(true);
 
     try {
-      const res = await fetch("/api/demo-request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error(t.formError);
-      setSubmitted(true);
+      const result = await submitDemoRequest(values);
 
-      dl.current()?.push({
-        event: "demo_form_submitted",
-        empresa: data.company,
-      });
-      dl.current()?.push({
-        event: "generate_lead",
-        lead_type: "demo",
-        currency: "EUR",
-        value: 150,
-      });
-    } catch {
-      setFormError(t.formError);
-      dl.current()?.push({
+      if (result.status === "success") {
+        resetForm();
+        setSubmitted(true);
+        // No personal data (name, email, company) goes to analytics.
+        pushDataLayerEvent({ event: "demo_form_submitted" });
+        pushDataLayerEvent({
+          event: "generate_lead",
+          lead_type: "demo",
+          currency: "EUR",
+          value: 150,
+        });
+        return;
+      }
+
+      setFeedback(
+        result.status === "invalid" ? "invalid" : result.status === "rateLimited" ? "rateLimited" : "failed",
+      );
+      pushDataLayerEvent({
         event: "form_error",
         form_name: "demo",
-        error_type: "submission",
+        error_type:
+          result.status === "invalid"
+            ? "server_validation"
+            : result.status === "rateLimited"
+              ? "rate_limited"
+              : "submission",
       });
     } finally {
+      isSubmittingRef.current = false;
       setSending(false);
     }
   }
+
+  const feedbackMessage =
+    feedback === "invalid"
+      ? t.serverInvalid
+      : feedback === "rateLimited"
+        ? t.rateLimited
+        : feedback === "failed"
+          ? t.genericError
+          : "";
 
   return (
     <div ref={revealRef} className="bg-white">
@@ -472,11 +616,11 @@ export function DemoClient() {
                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[var(--ulpiano-green)] to-emerald-400" />
                 
                 {submitted ? (
-                  <div className="text-center py-10">
+                  <div role="status" className="text-center py-10">
                     <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mx-auto mb-6">
                       <ShieldCheck size={32} strokeWidth={2} />
                     </div>
-                    <h3 className="text-2xl font-bold text-ink mb-3">
+                    <h3 ref={successHeadingRef} tabIndex={-1} className="text-2xl font-bold text-ink mb-3 focus:outline-none">
                       {t.successTitle}
                     </h3>
                     <p className="text-[15px] text-slate-600 leading-relaxed mb-8">
@@ -504,74 +648,100 @@ export function DemoClient() {
                       </p>
                     </div>
                     
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                      <div>
-                        <label htmlFor="name" className="block text-[14px] font-semibold text-ink mb-2">
-                          {t.name}
-                        </label>
+                    <form
+                      ref={formRef}
+                      onSubmit={handleSubmit}
+                      noValidate
+                      aria-busy={sending}
+                      className="flex flex-col gap-5"
+                    >
+                      {FORM_FIELDS.map((field) => {
+                        const errorMessage = getFieldErrorMessage(field.fieldName);
+                        const errorId = `${field.inputId}-error`;
+                        return (
+                          <div key={field.fieldName}>
+                            <label htmlFor={field.inputId} className="block text-[14px] font-semibold text-ink mb-2">
+                              {t[field.labelKey]}
+                            </label>
+                            <input
+                              type={field.type}
+                              id={field.inputId}
+                              name={field.inputId}
+                              value={values[field.fieldName]}
+                              onChange={(changeEvent) => handleValueChange(field.fieldName, changeEvent.target.value)}
+                              onFocus={field.fieldName === "fullName" ? handleFormStarted : undefined}
+                              placeholder={field.placeholderKey ? t[field.placeholderKey] : field.placeholder}
+                              autoComplete={field.autoComplete}
+                              maxLength={DEMO_FIELD_MAX_LENGTH}
+                              required
+                              aria-required="true"
+                              aria-invalid={errorMessage ? "true" : "false"}
+                              aria-describedby={errorMessage ? errorId : undefined}
+                              className={`${INPUT_CLASS_NAME} ${errorMessage ? INPUT_INVALID_CLASS_NAME : INPUT_VALID_CLASS_NAME}`}
+                            />
+                            {errorMessage && (
+                              <p id={errorId} className="text-[13px] text-red-600 mt-1.5 leading-snug">
+                                {errorMessage}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {/* Honeypot: hidden from people and assistive technology; bots tend to fill it. */}
+                      <div aria-hidden="true" className="absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+                        <label htmlFor="demo-website">Website</label>
                         <input
                           type="text"
-                          id="name"
-                          name="name"
-                          required
-                          placeholder={t.namePlaceholder}
-                          onFocus={handleFormStarted}
-                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-[15px] text-ink placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                          id="demo-website"
+                          name="website"
+                          value={honeypotValue}
+                          onChange={(changeEvent) => setHoneypotValue(changeEvent.target.value)}
+                          tabIndex={-1}
+                          autoComplete="off"
                         />
                       </div>
-                      <div>
-                        <label htmlFor="email" className="block text-[14px] font-semibold text-ink mb-2">
-                          {t.email}
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          required
-                          placeholder="maria@despacho.com"
-                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-[15px] text-ink placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="company" className="block text-[14px] font-semibold text-ink mb-2">
-                          {t.company}
-                        </label>
-                        <input
-                          type="text"
-                          id="company"
-                          name="company"
-                          required
-                          placeholder={t.companyPlaceholder}
-                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-[15px] text-ink placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                        />
-                      </div>
-                      
+
                       <ConsentCheckbox
                         locale={locale}
                         formId="demo"
                         consentProcessing={consentProcessing}
-                        consentMarketing={consentMarketing}
-                        onProcessingChange={(v) => {
-                          setConsentProcessing(v);
-                          if (v) setConsentError(false);
+                        consentMarketing={false}
+                        onProcessingChange={(isChecked) => {
+                          setConsentProcessing(isChecked);
+                          if (isChecked) setConsentError(false);
                         }}
-                        onMarketingChange={setConsentMarketing}
+                        onMarketingChange={() => {}}
                         processingError={consentError}
                       />
-                      {formError && (
-                        <p className="text-[14px] text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">
-                          {formError}
-                        </p>
+
+                      {feedbackMessage && (
+                        <div
+                          role="alert"
+                          className="text-[14px] text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 flex flex-col gap-2"
+                        >
+                          <p>{feedbackMessage}</p>
+                          {feedback === "failed" && (
+                            <button
+                              type="button"
+                              onClick={() => formRef.current?.requestSubmit()}
+                              disabled={sending}
+                              className="self-start font-semibold underline underline-offset-2 disabled:opacity-60"
+                            >
+                              {t.retry}
+                            </button>
+                          )}
+                        </div>
                       )}
-                      
+
                       <button
                         type="submit"
                         disabled={sending}
-                        className="btn-primary w-full py-4 text-[16px] shadow-[0_8px_20px_rgba(45,106,79,0.3)] hover:shadow-[0_10px_25px_rgba(45,106,79,0.4)] hover:-translate-y-0.5 mt-2"
+                        className="btn-primary w-full py-4 text-[16px] shadow-[0_8px_20px_rgba(45,106,79,0.3)] hover:shadow-[0_10px_25px_rgba(45,106,79,0.4)] hover:-translate-y-0.5 mt-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                       >
                         {sending ? t.sending : t.submit} <ArrowRight size={18} className="ml-1" />
                       </button>
-                      
+
                       <div className="flex items-center justify-center gap-2 text-[13px] text-slate-400 mt-2 font-medium">
                         <Shield size={14} className="text-emerald-500" />
                         <span>{t.noCommitment}</span>
