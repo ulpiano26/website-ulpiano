@@ -36,7 +36,7 @@ export default function HeroCa() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 z-20 py-6 md:py-8 border-t border-white/10" style={{ background: 'rgba(10, 10, 10, 0.4)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+      <div className="absolute bottom-0 left-0 right-0 z-20 py-6 md:py-8 border-t border-white/10" style={{ background: 'rgba(8, 18, 40, 0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
         <p className="eyebrow text-center mb-4 md:mb-6 text-white/40 text-[10px] md:text-[11px]">
           PROFESSIONALS QUE CONFIEN EN ULPIANO
         </p>

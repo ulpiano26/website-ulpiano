@@ -323,7 +323,9 @@ h3 {
    HERO SECTION
    ============================================ */
 .hero {
-  background: linear-gradient(180deg, #0A0A0C 0%, #12141A 100%);
+  background:
+    radial-gradient(ellipse 70% 55% at 80% 15%, rgba(56, 120, 220, 0.22) 0%, transparent 65%),
+    linear-gradient(180deg, #0A1630 0%, #0F1F3D 55%, #132B54 100%);
   color: var(--white);
   padding-top: calc(64px + var(--space-16));
   padding-bottom: 140px;
@@ -345,7 +347,7 @@ h3 {
   right: -200px;
   width: 600px;
   height: 600px;
-  background: rgba(180, 100, 220, 0.04);
+  background: rgba(96, 165, 250, 0.10);
   border-radius: 50%;
   filter: blur(120px);
   pointer-events: none;
