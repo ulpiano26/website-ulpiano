@@ -1,0 +1,735 @@
+/* ============================================
+   HERO MOCKUP — animated product card
+   ============================================ */
+
+.stage {
+  --row-height: 56px;
+  --row-icon-size: 28px;
+  --visible-row-count: 4;
+  --glyph-height: 1.25em;
+
+  position: relative;
+  width: 100%;
+  perspective: 1400px;
+}
+
+.stage[data-ambient-paused] * {
+  animation-play-state: paused !important;
+}
+
+/* ---- Backdrop glow ---- */
+.backdropGlow {
+  position: absolute;
+  inset: -24% -20%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.backdropGlowNavy,
+.backdropGlowGreen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.backdropGlowNavy {
+  background: radial-gradient(closest-side, rgba(59, 104, 196, 0.36), rgba(59, 104, 196, 0.12) 55%, transparent);
+}
+
+.backdropGlowGreen {
+  background: radial-gradient(closest-side, rgba(64, 145, 108, 0.46), rgba(45, 106, 79, 0.14) 55%, transparent);
+  will-change: opacity;
+}
+
+/* ---- Tilt layer & card ---- */
+.tiltLayer {
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--white);
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.55),
+    0 20px 45px -15px rgba(45, 106, 79, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.pointerHighlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(96, 165, 250, 0.1), rgba(64, 145, 108, 0.04) 55%, transparent);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---- Header & tabs ---- */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--white);
+  border-bottom: 1px solid var(--mist);
+}
+
+.tablist {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.tab {
+  position: relative;
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--green-light);
+  outline-offset: 2px;
+}
+
+.tabPill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--radius-sm);
+  background: var(--night);
+}
+
+.tabLabel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+}
+
+.tabLabelIdle,
+.tabLabelActive {
+  grid-area: 1 / 1;
+  transition: opacity 260ms ease;
+}
+
+.tabLabelIdle { color: var(--slate); }
+.tab:hover .tabLabelIdle { color: var(--ink); }
+.tabActive .tabLabelIdle { opacity: 0; }
+
+.tabLabelActive {
+  color: var(--white);
+  opacity: 0;
+}
+
+.tabActive .tabLabelActive { opacity: 1; }
+
+.tabProgressTrack {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -7px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.tabActive .tabProgressTrack { background: rgba(203, 213, 225, 0.7); }
+
+.tabProgressFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--ulpiano-green);
+  transform-origin: left center;
+}
+
+/* ---- Live status indicator ---- */
+.liveIndicator {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  margin-right: 2px;
+}
+
+.liveIndicatorDot,
+.liveIndicatorPulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--green-light);
+}
+
+.liveIndicatorPulse {
+  animation: live-pulse 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes live-pulse {
+  0% { opacity: 0.55; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(2.8); }
+}
+
+/* ---- Body ---- */
+.body {
+  position: relative;
+  padding: var(--space-6);
+  background: var(--white);
+}
+
+/* ---- Shared text primitives ---- */
+.slideText {
+  position: relative;
+  display: block;
+}
+
+.slideTextLine {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rollingNumber {
+  position: relative;
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+.rollingNumberGlyphs {
+  position: relative;
+  display: inline-flex;
+  height: var(--glyph-height);
+  line-height: var(--glyph-height);
+}
+
+.digitColumn {
+  position: relative;
+  display: inline-block;
+  height: var(--glyph-height);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+
+.digitSizer {
+  display: block;
+  visibility: hidden;
+}
+
+.digitStrip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.digitGlyph {
+  display: block;
+  height: var(--glyph-height);
+  text-align: center;
+}
+
+.symbolGlyph {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* ---- KPIs ---- */
+.kpiRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.kpi {
+  min-width: 0;
+}
+
+.kpi:first-child {
+  padding-right: var(--space-5);
+  border-right: 1px solid var(--mist);
+}
+
+.kpi:last-child {
+  padding-left: var(--space-5);
+}
+
+.kpiLabel {
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.kpiValueLine {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 26px;
+  margin-top: var(--space-2);
+}
+
+.kpiValue {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.kpiValueAccent { color: var(--ulpiano-green); }
+
+.kpiGlow {
+  position: absolute;
+  top: 50%;
+  left: -28px;
+  z-index: 0;
+  width: 170px;
+  height: 64px;
+  translate: 0 -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(64, 145, 108, 0.3), rgba(64, 145, 108, 0.08) 60%, transparent);
+  pointer-events: none;
+}
+
+.kpiMeta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  height: 40px;
+  margin-top: var(--space-2);
+}
+
+.reliefChip {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--green-bg);
+  color: var(--ulpiano-green);
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.kpiCaption {
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--slate);
+}
+
+.deadlineRingSlot {
+  display: inline-flex;
+}
+
+.deadlineRing {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke-width: 2.4;
+}
+
+.deadlineRingTrack { stroke: var(--mist); }
+.deadlineRingConsumed { stroke: var(--ulpiano-green); }
+
+/* ---- Progress ---- */
+.progressBlock {
+  margin-top: var(--space-3);
+}
+
+.progressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--slate);
+}
+
+.progressValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.progressCheck {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ulpiano-green);
+  color: var(--white);
+}
+
+.progressBarArea {
+  position: relative;
+  height: 6px;
+}
+
+.progressTrack {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--mist);
+}
+
+.heirSegment {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(100% / 3);
+  transform-origin: left center;
+}
+
+.heirSegment + .heirSegment {
+  border-left: 2px solid var(--white);
+}
+
+.heirShadeDark { background-color: var(--ulpiano-green); }
+.heirShadeMedium { background-color: var(--green-light); }
+.heirShadeLight { background-color: #74c69d; }
+
+.partitionFill {
+  position: absolute;
+  inset: 0;
+  background: var(--ulpiano-green);
+  transform-origin: left center;
+}
+
+.heirAvatar {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  translate: -50% -50%;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(15, 31, 61, 0.2);
+}
+
+/* ---- List ---- */
+.listSection {
+  margin-top: var(--space-5);
+}
+
+.listTitle {
+  margin-bottom: var(--space-1);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--slate);
+}
+
+.listViewport {
+  position: relative;
+}
+
+.list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--row-height) * var(--visible-row-count));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--row-height);
+  overflow: hidden;
+  border-bottom: 1px solid var(--mist);
+  background: var(--white);
+}
+
+.row:last-child { border-bottom-color: transparent; }
+
+.row > * {
+  position: relative;
+  z-index: 1;
+}
+
+.rowInventorySlot { z-index: 2; }
+
+.rowStacked {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.rowIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--row-icon-size);
+  height: var(--row-icon-size);
+  border-radius: var(--radius-sm);
+  background: var(--green-bg);
+  color: var(--ulpiano-green);
+}
+
+.rowIconGlyph {
+  display: grid;
+  place-items: center;
+}
+
+.rowName {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink);
+}
+
+.rowTrailing {
+  display: inline-flex;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.rowTrailingContent {
+  display: inline-flex;
+}
+
+.rowValue {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.row > .rowLandingFlash,
+.row > .rowShimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.row > .rowLandingFlash {
+  background: var(--green-bg);
+  opacity: 0;
+}
+
+.row > .rowShimmer {
+  background: linear-gradient(100deg, transparent 15%, rgba(64, 145, 108, 0.1) 50%, transparent 85%);
+  transform: translateX(-100%);
+  animation: row-shimmer 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes row-shimmer {
+  0% { transform: translateX(-100%); }
+  70%, 100% { transform: translateX(100%); }
+}
+
+/* ---- Timeline connector ---- */
+.connectorLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.connectorSegment {
+  position: absolute;
+  top: calc(var(--connector-index) * var(--row-height) + var(--row-height) / 2 + var(--row-icon-size) / 2 + 3px);
+  left: calc(var(--row-icon-size) / 2 - 1px);
+  width: 2px;
+  height: calc(var(--row-height) - var(--row-icon-size) - 6px);
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--mist);
+}
+
+.connectorFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--green-light);
+  transform-origin: center top;
+}
+
+/* ---- Status badges ---- */
+.badgeSlot {
+  position: relative;
+  display: inline-flex;
+  justify-content: flex-end;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.badgeWaiting { background: var(--surface); color: var(--slate); }
+.badgePending { background: var(--warning-bg); color: var(--warning); }
+.badgeInProgress { background: rgba(64, 145, 108, 0.12); color: var(--ulpiano-green); }
+.badgeCalculating { background: var(--info-bg); color: var(--info); }
+.badgeCompleted { background: var(--green-bg); color: var(--ulpiano-green); }
+
+.badgePulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: badge-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+
+.loadingDots {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 1px;
+}
+
+.loadingDots span {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: loading-dot 1.2s ease-in-out infinite;
+}
+
+.loadingDots span:nth-child(2) { animation-delay: 0.15s; }
+.loadingDots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes loading-dot {
+  0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* ---- Satellite cards ---- */
+.satellite {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.satelliteTopLeft {
+  top: -26px;
+  left: -34px;
+}
+
+.satelliteBottomRight {
+  right: -30px;
+  bottom: -24px;
+}
+
+.satelliteDrift {
+  animation: satellite-drift 5.6s ease-in-out infinite;
+}
+
+.satelliteDriftDelayed { animation-delay: -2.8s; }
+
+@keyframes satellite-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.satelliteCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 7px 12px 7px 7px;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  white-space: nowrap;
+  box-shadow:
+    0 14px 30px -12px rgba(3, 10, 28, 0.55),
+    0 2px 6px rgba(15, 31, 61, 0.12);
+}
+
+.satelliteIcon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--green-bg);
+  color: var(--ulpiano-green);
+}
+
+.satelliteText {
+  display: inline-flex;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.satelliteTitle {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.satelliteDetail { color: var(--slate); }
+
+@media (max-width: 767px) {
+  .satellite { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liveIndicatorPulse,
+  .badgePulseDot,
+  .loadingDots span,
+  .satelliteDrift,
+  .row > .rowShimmer {
+    animation: none;
+  }
+
+  .liveIndicatorPulse { opacity: 0; }
+}

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import HeroMockup from './HeroMockup'
+import { HeroMockup } from '@/features/hero-mockup'
 
 export default function Hero() {
   const marqueeNames = [
