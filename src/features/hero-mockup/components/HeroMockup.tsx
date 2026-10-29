@@ -10,7 +10,7 @@ import { useHeroTimeline } from '../hooks/useHeroTimeline'
 import { useInViewport } from '../hooks/useInViewport'
 import { useInteractionPause } from '../hooks/useInteractionPause'
 import { useMediaQuery } from '../hooks/useMediaQuery'
-import { usePointerTilt } from '../hooks/usePointerTilt'
+import { usePointerHighlight } from '../hooks/usePointerHighlight'
 import type { HeroAct } from '../types/heroMockup.types'
 import { HeroMockupKpis } from './HeroMockupKpis'
 import { HeroMockupList } from './HeroMockupList'
@@ -29,7 +29,7 @@ export function HeroMockup() {
 
   const isReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const hasFinePointerDesktop = useMediaQuery('(min-width: 768px) and (hover: hover) and (pointer: fine)')
-  const isTiltEnabled = hasFinePointerDesktop && !isReducedMotion
+  const isPointerHighlightEnabled = hasFinePointerDesktop && !isReducedMotion
 
   const isInViewport = useInViewport(stageRef)
   const isDocumentVisible = useDocumentVisibility()
@@ -42,7 +42,7 @@ export function HeroMockup() {
     isPlaying,
     isReducedMotion,
   })
-  const pointerTilt = usePointerTilt(isTiltEnabled)
+  const pointerHighlight = usePointerHighlight(isPointerHighlightEnabled)
 
   const panelId = `${instanceId}-panel`
   const getTabId = useCallback((act: HeroAct) => `${instanceId}-tab-${act}`, [instanceId])
@@ -62,7 +62,7 @@ export function HeroMockup() {
 
   const handlePointerLeave = () => {
     setIsPointerOverCard(false)
-    pointerTilt.handlePointerLeave()
+    pointerHighlight.handlePointerLeave()
   }
 
   const activeAct = timelineState.act
@@ -78,7 +78,7 @@ export function HeroMockup() {
             className={styles.stage}
             data-ambient-paused={!isAmbientRunning || undefined}
             onPointerEnter={handlePointerEnter}
-            onPointerMove={pointerTilt.handlePointerMove}
+            onPointerMove={pointerHighlight.handlePointerMove}
             onPointerLeave={handlePointerLeave}
           >
             {areDecorationsEnabled && (
@@ -93,57 +93,52 @@ export function HeroMockup() {
               </div>
             )}
 
-            <motion.div
-              className={styles.tiltLayer}
-              style={isTiltEnabled ? { rotateX: pointerTilt.rotateX, rotateY: pointerTilt.rotateY } : undefined}
-            >
-              <div className={styles.card}>
-                <HeroMockupTabs
-                  activeAct={activeAct}
-                  actProgress={actProgress}
-                  panelId={panelId}
-                  getTabId={getTabId}
-                  onSelectAct={handleSelectAct}
-                />
+            <div className={styles.card}>
+              <HeroMockupTabs
+                activeAct={activeAct}
+                actProgress={actProgress}
+                panelId={panelId}
+                getTabId={getTabId}
+                onSelectAct={handleSelectAct}
+              />
 
-                <div
-                  id={panelId}
-                  className={styles.body}
-                  role="tabpanel"
-                  aria-labelledby={getTabId(activeAct)}
-                >
-                  <AnimatePresence initial={false} mode="popLayout">
-                    <motion.div
-                      key={contentKey}
-                      className={styles.bodyContent}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: timelineState.isFadingOut ? 0 : 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        duration: isReducedMotion ? REDUCED_MOTION_CROSSFADE_SECONDS : CONTENT_FADE_SECONDS,
-                        ease: 'easeInOut',
-                      }}
-                    >
-                      <HeroMockupKpis timelineState={timelineState} />
-                      <HeroMockupProgress timelineState={timelineState} />
-                      <HeroMockupList timelineState={timelineState} />
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-
-                {isTiltEnabled && (
-                  <motion.span
-                    className={styles.pointerHighlight}
-                    style={{
-                      x: pointerTilt.highlightX,
-                      y: pointerTilt.highlightY,
-                      opacity: pointerTilt.highlightOpacity,
+              <div
+                id={panelId}
+                className={styles.body}
+                role="tabpanel"
+                aria-labelledby={getTabId(activeAct)}
+              >
+                <AnimatePresence initial={false} mode="popLayout">
+                  <motion.div
+                    key={contentKey}
+                    className={styles.bodyContent}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: timelineState.isFadingOut ? 0 : 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: isReducedMotion ? REDUCED_MOTION_CROSSFADE_SECONDS : CONTENT_FADE_SECONDS,
+                      ease: 'easeInOut',
                     }}
-                    aria-hidden="true"
-                  />
-                )}
+                  >
+                    <HeroMockupKpis timelineState={timelineState} />
+                    <HeroMockupProgress timelineState={timelineState} />
+                    <HeroMockupList timelineState={timelineState} />
+                  </motion.div>
+                </AnimatePresence>
               </div>
-            </motion.div>
+
+              {isPointerHighlightEnabled && (
+                <motion.span
+                  className={styles.pointerHighlight}
+                  style={{
+                    x: pointerHighlight.highlightX,
+                    y: pointerHighlight.highlightY,
+                    opacity: pointerHighlight.highlightOpacity,
+                  }}
+                  aria-hidden="true"
+                />
+              )}
+            </div>
 
             {areDecorationsEnabled && (
               <>
@@ -153,16 +148,12 @@ export function HeroMockup() {
                   title={HERO_SATELLITE_COPY.coverage.title}
                   detail={HERO_SATELLITE_COPY.coverage.detail}
                   isVisible={activeAct === 'planning' && timelineState.isCoverageSatelliteVisible}
-                  parallaxX={pointerTilt.satelliteParallaxX}
-                  parallaxY={pointerTilt.satelliteParallaxY}
                 />
                 <SatelliteCard
                   placement="bottomRight"
                   iconName="fileText"
                   title={HERO_SATELLITE_COPY.filing.title}
                   isVisible={activeAct === 'processing' && timelineState.isFilingSatelliteVisible}
-                  parallaxX={pointerTilt.satelliteParallaxX}
-                  parallaxY={pointerTilt.satelliteParallaxY}
                 />
               </>
             )}

@@ -1,6 +1,6 @@
 'use client'
 
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { AnimatePresence, motion, type Variants } from 'motion/react'
 import { cn } from '@/lib/cn'
 import styles from '../styles/heroMockup.module.css'
@@ -11,6 +11,7 @@ import { ROW_ENTRANCE_DURATION_MS, ROW_STAGGER_MS } from '../timeline/heroTimeli
 import type { DrawableIconName, HeroTimelineState, ProcedureStatus } from '../types/heroMockup.types'
 import { formatEuroAmount } from '../utils/formatGroupedInteger'
 import { DrawableIcon } from './DrawableIcon'
+import { ProcedureTimelineConnector } from './ProcedureTimelineConnector'
 import { RollingNumber } from './RollingNumber'
 import { SlideText } from './SlideText'
 import { StatusBadge } from './StatusBadge'
@@ -18,7 +19,6 @@ import { StatusBadge } from './StatusBadge'
 const ROW_STAGGER_SECONDS = ROW_STAGGER_MS / 1000
 const PROCEDURE_ENTRANCE_BASE_DELAY_SECONDS = 0.3
 const REACHED_PROCEDURE_STATUSES: ProcedureStatus[] = ['completed', 'inProgress', 'calculating']
-const CONNECTOR_SEGMENT_COUNT = HERO_PROCEDURES.length - 1
 
 const ROW_VARIANTS: Variants = {
   hidden: { opacity: 0, y: 8, scale: 1, filter: 'blur(4px)' },
@@ -107,147 +107,129 @@ export function HeroMockupList({ timelineState }: HeroMockupListProps) {
     REACHED_PROCEDURE_STATUSES.includes(status)
   ).length
 
+  /*
+   * The first row is a single persistent element shared by both acts: "Piso en Barcelona"
+   * morphs into "Inventario de bienes" while the other asset rows collapse behind it.
+   */
+  const inventorySlotRow = (
+    <motion.li
+      key="inventory-slot"
+      className={cn(styles.row, styles.rowInventorySlot)}
+      variants={ROW_VARIANTS}
+      custom={0}
+      initial={isReducedMotion ? false : 'hidden'}
+      animate="visible"
+    >
+      <AnimatePresence>
+        {!isPlanning && !isReducedMotion && (
+          <motion.span
+            key="inventory-landing-flash"
+            className={styles.rowLandingFlash}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.85, 0] }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.1, delay: 0.28, times: [0, 0.3, 1] }}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+      <RowIcon
+        iconName={isPlanning ? firstAsset.icon : firstProcedure.icon}
+        isDrawn={isPlanning ? timelineState.landedAssetCount > 0 : true}
+        delaySeconds={isPlanning ? 0 : 0.22}
+      />
+      <SlideText className={styles.rowName} text={isPlanning ? firstAsset.name : firstProcedure.name} />
+      <RowTrailingSwap swapKey={isPlanning ? 'asset-value' : 'procedure-status'}>
+        {isPlanning ? (
+          <RollingNumber
+            className={styles.rowValue}
+            value={timelineState.landedAssetCount > 0 ? firstAsset.value : 0}
+            prefix="€ "
+            accessibleText={formatEuroAmount(firstAsset.value)}
+          />
+        ) : (
+          <StatusBadge status={timelineState.procedureStatuses[0]} />
+        )}
+      </RowTrailingSwap>
+    </motion.li>
+  )
+
+  const collapsibleAssetRows = remainingAssets.map((asset, remainingIndex) => {
+    const rowIndex = remainingIndex + 1
+    const isStacked = !isPlanning
+    const isLanded = timelineState.landedAssetCount > rowIndex
+    return (
+      <motion.li
+        key={asset.id}
+        layout="position"
+        className={cn(styles.row, isStacked && styles.rowStacked)}
+        variants={ROW_VARIANTS}
+        custom={rowIndex * ROW_STAGGER_SECONDS}
+        initial={isReducedMotion ? false : 'hidden'}
+        animate={isStacked ? 'stacked' : 'visible'}
+        transition={{ layout: { ...ROW_COLLAPSE_SPRING, delay: remainingIndex * 0.035 } }}
+        aria-hidden={isStacked || undefined}
+        inert={isStacked || undefined}
+      >
+        <RowIcon iconName={asset.icon} isDrawn={isLanded} />
+        <span className={styles.rowName}>{asset.name}</span>
+        <span className={styles.rowTrailing}>
+          <RollingNumber
+            className={styles.rowValue}
+            value={isLanded ? asset.value : 0}
+            prefix="€ "
+            accessibleText={formatEuroAmount(asset.value)}
+          />
+        </span>
+      </motion.li>
+    )
+  })
+
+  const procedureRows = remainingProcedures.map((procedure, remainingIndex) => {
+    const status = timelineState.procedureStatuses[remainingIndex + 1]
+    const entranceDelaySeconds = PROCEDURE_ENTRANCE_BASE_DELAY_SECONDS + remainingIndex * ROW_STAGGER_SECONDS
+    return (
+      <motion.li
+        key={procedure.id}
+        className={styles.row}
+        variants={ROW_VARIANTS}
+        custom={entranceDelaySeconds}
+        initial={isReducedMotion ? false : 'hidden'}
+        animate="visible"
+        exit="exit"
+      >
+        {status === 'inProgress' && !isReducedMotion && (
+          <span className={styles.rowShimmer} aria-hidden="true" />
+        )}
+        <RowIcon iconName={procedure.icon} isDrawn delaySeconds={entranceDelaySeconds + 0.25} />
+        <span className={styles.rowName}>{procedure.name}</span>
+        <span className={styles.rowTrailing}>
+          <StatusBadge status={status} />
+        </span>
+      </motion.li>
+    )
+  })
+
   return (
     <div className={styles.listSection}>
       <SlideText className={styles.listTitle} text={HERO_ACT_COPY[timelineState.act].listTitle} />
 
       <div className={styles.listViewport}>
-      <ul className={styles.list}>
-        {timelineState.areAssetsVisible && (
-          <motion.li
-            key="inventory-slot"
-            className={cn(styles.row, styles.rowInventorySlot)}
-            variants={ROW_VARIANTS}
-            custom={0}
-            initial={isReducedMotion ? false : 'hidden'}
-            animate="visible"
-          >
-            <AnimatePresence>
-              {!isPlanning && !isReducedMotion && (
-                <motion.span
-                  key="inventory-landing-flash"
-                  className={styles.rowLandingFlash}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.85, 0] }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.1, delay: 0.28, times: [0, 0.3, 1] }}
-                  aria-hidden="true"
-                />
-              )}
-            </AnimatePresence>
-            <RowIcon
-              iconName={isPlanning ? firstAsset.icon : firstProcedure.icon}
-              isDrawn={isPlanning ? timelineState.landedAssetCount > 0 : true}
-              delaySeconds={isPlanning ? 0 : 0.22}
-            />
-            <SlideText
-              className={styles.rowName}
-              text={isPlanning ? firstAsset.name : firstProcedure.name}
-            />
-            <RowTrailingSwap swapKey={isPlanning ? 'asset-value' : 'procedure-status'}>
-              {isPlanning ? (
-                <RollingNumber
-                  className={styles.rowValue}
-                  value={timelineState.landedAssetCount > 0 ? firstAsset.value : 0}
-                  prefix="€ "
-                  accessibleText={formatEuroAmount(firstAsset.value)}
-                />
-              ) : (
-                <StatusBadge status={timelineState.procedureStatuses[0]} />
-              )}
-            </RowTrailingSwap>
-          </motion.li>
-        )}
+        <ul className={styles.list}>
+          {timelineState.areAssetsVisible && inventorySlotRow}
+          {timelineState.areAssetsVisible && collapsibleAssetRows}
+          <AnimatePresence initial={false} mode="popLayout">
+            {!isPlanning && timelineState.areProceduresVisible && procedureRows}
+          </AnimatePresence>
+        </ul>
 
-        {timelineState.areAssetsVisible &&
-          remainingAssets.map((asset, remainingIndex) => {
-            const rowIndex = remainingIndex + 1
-            const isStacked = !isPlanning
-            return (
-              <motion.li
-                key={asset.id}
-                layout="position"
-                className={cn(styles.row, isStacked && styles.rowStacked)}
-                variants={ROW_VARIANTS}
-                custom={rowIndex * ROW_STAGGER_SECONDS}
-                initial={isReducedMotion ? false : 'hidden'}
-                animate={isStacked ? 'stacked' : 'visible'}
-                transition={{ layout: { ...ROW_COLLAPSE_SPRING, delay: (rowIndex - 1) * 0.035 } }}
-                aria-hidden={isStacked || undefined}
-                inert={isStacked || undefined}
-              >
-                <RowIcon iconName={asset.icon} isDrawn={timelineState.landedAssetCount > rowIndex} />
-                <span className={styles.rowName}>{asset.name}</span>
-                <span className={styles.rowTrailing}>
-                  <RollingNumber
-                    className={styles.rowValue}
-                    value={timelineState.landedAssetCount > rowIndex ? asset.value : 0}
-                    prefix="€ "
-                    accessibleText={formatEuroAmount(asset.value)}
-                  />
-                </span>
-              </motion.li>
-            )
-          })}
-
-        <AnimatePresence initial={false} mode="popLayout">
-          {!isPlanning &&
-            timelineState.areProceduresVisible &&
-            remainingProcedures.map((procedure, remainingIndex) => {
-              const procedureIndex = remainingIndex + 1
-              const status = timelineState.procedureStatuses[procedureIndex]
-              const entranceDelaySeconds =
-                PROCEDURE_ENTRANCE_BASE_DELAY_SECONDS + remainingIndex * ROW_STAGGER_SECONDS
-              return (
-                <motion.li
-                  key={procedure.id}
-                  className={cn(styles.row, status === 'inProgress' && styles.rowActive)}
-                  variants={ROW_VARIANTS}
-                  custom={entranceDelaySeconds}
-                  initial={isReducedMotion ? false : 'hidden'}
-                  animate="visible"
-                  exit="exit"
-                >
-                  {status === 'inProgress' && !isReducedMotion && (
-                    <span className={styles.rowShimmer} aria-hidden="true" />
-                  )}
-                  <RowIcon
-                    iconName={procedure.icon}
-                    isDrawn
-                    delaySeconds={entranceDelaySeconds + 0.25}
-                  />
-                  <span className={styles.rowName}>{procedure.name}</span>
-                  <span className={styles.rowTrailing}>
-                    <StatusBadge status={status} />
-                  </span>
-                </motion.li>
-              )
-            })}
-        </AnimatePresence>
-      </ul>
-
-      <div className={styles.connectorLayer} aria-hidden="true">
-        {Array.from({ length: CONNECTOR_SEGMENT_COUNT }, (_, segmentIndex) => (
-          <motion.span
-            key={`connector-${segmentIndex}`}
-            className={styles.connectorSegment}
-            style={{ '--connector-index': segmentIndex } as CSSProperties}
-            initial={false}
-            animate={{ opacity: !isPlanning && timelineState.areProceduresVisible ? 1 : 0 }}
-            transition={{
-              duration: 0.4,
-              delay: isPlanning ? 0 : PROCEDURE_ENTRANCE_BASE_DELAY_SECONDS + segmentIndex * ROW_STAGGER_SECONDS,
-            }}
-          >
-            <motion.span
-              className={styles.connectorFill}
-              initial={false}
-              animate={{ scaleY: !isPlanning && reachedProcedureCount > segmentIndex + 1 ? 1 : 0 }}
-              transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-            />
-          </motion.span>
-        ))}
-      </div>
+        <ProcedureTimelineConnector
+          segmentCount={HERO_PROCEDURES.length - 1}
+          isVisible={!isPlanning && timelineState.areProceduresVisible}
+          reachedProcedureCount={isPlanning ? 0 : reachedProcedureCount}
+          entranceDelaySeconds={PROCEDURE_ENTRANCE_BASE_DELAY_SECONDS}
+          segmentStaggerSeconds={ROW_STAGGER_SECONDS}
+        />
       </div>
     </div>
   )

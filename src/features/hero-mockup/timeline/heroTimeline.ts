@@ -47,7 +47,7 @@ const UNSORTED_TIMELINE_CUES: HeroTimelineCue[] = [
   // Act two: processing
   { atMs: PROCESSING_START_MS, event: { type: 'processingStart' } },
   { atMs: PROCESSING_START_MS + 350, event: { type: 'deadlineRingDraw' } },
-  { atMs: PROCESSING_START_MS + 700, event: { type: 'proceduresEnter' } },
+  { atMs: PROCESSING_START_MS + 450, event: { type: 'proceduresEnter' } },
   {
     atMs: PROCESSING_START_MS + 1_700,
     event: { type: 'procedureStatusChange', procedureIndex: 1, status: 'completed', partitionProgressPercent: 30 },

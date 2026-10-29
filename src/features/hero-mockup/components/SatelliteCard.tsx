@@ -1,6 +1,6 @@
 'use client'
 
-import { AnimatePresence, motion, type MotionValue } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/lib/cn'
 import styles from '../styles/heroMockup.module.css'
 import { SATELLITE_SPRING } from '../animation/heroMotionTokens'
@@ -13,23 +13,12 @@ interface SatelliteCardProps {
   iconName: DrawableIconName
   title: string
   detail?: string
-  parallaxX: MotionValue<number>
-  parallaxY: MotionValue<number>
 }
 
-export function SatelliteCard({
-  isVisible,
-  placement,
-  iconName,
-  title,
-  detail,
-  parallaxX,
-  parallaxY,
-}: SatelliteCardProps) {
+export function SatelliteCard({ isVisible, placement, iconName, title, detail }: SatelliteCardProps) {
   return (
-    <motion.div
+    <div
       className={cn(styles.satellite, placement === 'topLeft' ? styles.satelliteTopLeft : styles.satelliteBottomRight)}
-      style={{ x: parallaxX, y: parallaxY }}
       aria-hidden="true"
     >
       <div className={cn(styles.satelliteDrift, placement === 'bottomRight' && styles.satelliteDriftDelayed)}>
@@ -53,6 +42,6 @@ export function SatelliteCard({
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </div>
   )
 }

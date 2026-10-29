@@ -10,7 +10,6 @@
 
   position: relative;
   width: 100%;
-  perspective: 1400px;
 }
 
 .stage[data-ambient-paused] * {
@@ -41,15 +40,10 @@
   will-change: opacity;
 }
 
-/* ---- Tilt layer & card ---- */
-.tiltLayer {
-  position: relative;
-  z-index: 1;
-  will-change: transform;
-}
-
+/* ---- Card ---- */
 .card {
   position: relative;
+  z-index: 1;
   isolation: isolate;
   overflow: hidden;
   width: 100%;
