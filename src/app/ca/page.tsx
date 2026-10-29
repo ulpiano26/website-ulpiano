@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import HeroCa from "./_components/HeroCa";
+import IntroVideoSection from "@/features/intro-video/IntroVideoSection";
+import { introVideoContentCa } from "@/features/intro-video/content";
 
 export const metadata: Metadata = {
   title: "Plataforma Integral de Gestió Successòria",
@@ -76,6 +78,9 @@ export default function HomeCaPage() {
 
       {/* HERO */}
       <HeroCa />
+
+      {/* INTRO VIDEO */}
+      <IntroVideoSection content={introVideoContentCa} />
 
       {/* OUTPUTS / SOLUCIONS */}
       <section style={{ background: "var(--white)", padding: "var(--space-20) 0" }}>

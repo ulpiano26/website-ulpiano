@@ -7,6 +7,8 @@ import ComoFunciona from './_components/ComoFunciona'
 import Testimonio from './_components/Testimonio'
 import CtaFinal from './_components/CtaFinal'
 import ScrollRevealInit from './_components/ScrollRevealInit'
+import IntroVideoSection from '@/features/intro-video/IntroVideoSection'
+import { introVideoContentEs } from '@/features/intro-video/content'
 
 export const metadata: Metadata = {
   title: "Plataforma Integral de Gestión Sucesoria",
@@ -32,6 +34,7 @@ export default function HomePage() {
     <>
       <ScrollRevealInit />
       <Hero />
+      <IntroVideoSection content={introVideoContentEs} />
       <Outputs />
       <ParaQuien />
       <ComoFunciona />
