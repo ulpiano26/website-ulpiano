@@ -29,6 +29,7 @@ const pairs: Array<{ es: string; ca: string; priority: number; freq: "weekly" | 
   { es: "/recursos/blog",                                 ca: "/ca/recursos/blog",                                priority: 0.7, freq: "weekly"  },
   { es: "/recursos/blog/la-legitima-catalana",            ca: "/ca/recursos/blog/la-legitima-catalana",           priority: 0.6, freq: "monthly" },
   { es: "/recursos/blog/gestion-herencias-despacho",      ca: "/ca/recursos/blog/gestio-herencies-despatx",       priority: 0.6, freq: "monthly" },
+  { es: "/recursos/blog/ordenar-expediente-sucesorio",    ca: "/ca/recursos/blog/ordenar-expedient-successori",   priority: 0.6, freq: "monthly" },
   { es: "/recursos/blog/retencion-fidelizacion-cliente-asesorias", ca: "/ca/recursos/blog/retencio-fidelitzacio-client-assessories", priority: 0.6, freq: "monthly" },
   { es: "/recursos/blog/digitalizacion-derecho-sucesorio", ca: "/ca/recursos/blog/digitalitzacio-dret-successori", priority: 0.6, freq: "monthly" },
   { es: "/recursos/blog/ia-abogados-sucesiones",          ca: "/ca/recursos/blog/ia-advocats-successions",        priority: 0.6, freq: "monthly" },

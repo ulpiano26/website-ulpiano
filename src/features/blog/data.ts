@@ -26,7 +26,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Un expediente sucesorio sólido empieza por fijar los hechos, reunir los documentos y validar la posición de cada interesado. El orden de esas comprobaciones reduce rectificaciones y decisiones precipitadas.",
     readingTime: "8 min de lectura",
-    status: "coming-soon",
+    status: "published",
   },
   {
     slug: "retencion-fidelizacion-cliente-asesorias",

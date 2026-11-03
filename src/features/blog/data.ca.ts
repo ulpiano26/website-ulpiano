@@ -48,7 +48,7 @@ export const blogPostsCa: BlogPostCa[] = [
     excerpt:
       "Un expedient successori sòlid comença fixant els fets, reunint els documents i validant la posició de cada interessat. L'ordre d'aquestes comprovacions redueix rectificacions i decisions precipitades.",
     readingTime: "8 min de lectura",
-    status: "coming-soon",
+    status: "published",
   },
   {
     slug: "retencio-fidelitzacio-client-assessories",
