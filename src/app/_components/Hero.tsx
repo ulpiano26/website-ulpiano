@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { HeroMockup } from '@/features/hero-mockup'
+import { HeroShell, heroGhostLinkClass, heroPrimaryLinkClass } from '@/components/hero/HeroShell'
 
 export default function Hero() {
   const marqueeNames = [
@@ -8,8 +9,7 @@ export default function Hero() {
   const marqueeItems = [...marqueeNames, ...marqueeNames];
 
   return (
-    <section className="hero bg-night relative overflow-hidden shrink-0" id="hero">
-      <div className="hero__orb absolute z-0" />
+    <HeroShell id="hero">
       <div className="container relative z-10">
         <div className="hero__grid">
           <div className="hero__content">
@@ -36,10 +36,10 @@ export default function Hero() {
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-              <Link href="#cta-final" className="btn-primary w-full sm:w-auto justify-center shadow-[0_0_20px_rgba(45,106,79,0.4)] hover:shadow-[0_0_30px_rgba(45,106,79,0.6)]">
+              <Link href="#cta-final" className={heroPrimaryLinkClass}>
                 Solicita tu demo gratuita
               </Link>
-              <Link href="#como-funciona" className="btn-ghost group justify-start">
+              <Link href="#como-funciona" className={heroGhostLinkClass}>
                 Ver cómo funciona el motor normativo
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
                   <path d="M3 8h10"/><path d="M9 4l4 4-4 4"/>
@@ -71,6 +71,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-    </section>
+    </HeroShell>
   )
 }
