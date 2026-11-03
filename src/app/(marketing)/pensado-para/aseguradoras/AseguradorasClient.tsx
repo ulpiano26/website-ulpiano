@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { CategoryHero, HeroTitleAccent } from "@/components/hero/HeroShell";
 import {
   CheckCircle2,
   ArrowRight,
@@ -148,39 +149,11 @@ export function AseguradorasClient() {
   return (
     <div ref={revealRef}>
       {/* ═══ HERO ═══ */}
-      <section className="bg-night pt-[calc(64px+4rem)] pb-24 relative overflow-hidden">
-        {/* Decorative Grid & Glow */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-        <div className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 h-[400px] w-[600px] rounded-full bg-emerald-500 opacity-[0.12] blur-[120px]" />
-        
-        <div className="container relative z-10 text-center max-w-[850px]">
-          <div className="flex items-center justify-center gap-3 mb-8 reveal">
-            <div className="h-[1px] w-8 bg-emerald-500/50" />
-            <span className="text-emerald-400/90 text-xs font-bold tracking-[0.2em] uppercase">
-              Pensado para Aseguradoras
-            </span>
-            <div className="h-[1px] w-8 bg-emerald-500/50" />
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-bold text-white leading-[1.15] mb-8 reveal tracking-tight text-balance" style={{ animationDelay: '100ms' }}>
-            Pólizas de vida y decesos con gestión sucesoria <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">integrada</span>.
-          </h1>
-          
-          <p className="text-lg md:text-xl leading-relaxed text-white/60 mb-12 reveal text-balance mx-auto max-w-[680px]" style={{ animationDelay: '200ms' }}>
-            Transforma la indemnización en un servicio integral. Ofrece a los beneficiarios expediente digital, cálculo fiscal y apoyo documental completo.
-          </p>
-          
-          <div className="flex flex-wrap items-center justify-center gap-4 reveal" style={{ animationDelay: '300ms' }}>
-            <Link href="/demo" className="btn-primary shadow-[0_0_20px_rgba(45,106,79,0.4)] hover:shadow-[0_0_30px_rgba(45,106,79,0.6)] px-8 py-3.5 text-base">
-              Reserva tu Demo
-            </Link>
-            <Link href="#propuesta" className="btn-ghost group text-white/80 hover:text-white px-6">
-              Descubrir ventajas
-              <ArrowRight size={18} className="transition-transform group-hover:translate-y-1 ml-2 rotate-90 group-hover:rotate-90" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CategoryHero
+        eyebrow="Pensado para Aseguradoras"
+        title={<>Pólizas de vida y decesos con gestión sucesoria <HeroTitleAccent>integrada</HeroTitleAccent>.</>}
+        subtitle="Transforma la indemnización en un servicio integral. Ofrece a los beneficiarios expediente digital, cálculo fiscal y apoyo documental completo."
+      />
 
       {/* ═══ PROPUESTA DE VALOR ═══ */}
       <section id="propuesta" className="py-24 bg-white border-b border-slate-200">

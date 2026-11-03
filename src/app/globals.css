@@ -396,6 +396,40 @@ h3 {
 }
 .hero__cta-primary { margin-top: var(--space-8); }
 .hero__cta-secondary { margin-top: var(--space-4); }
+.hero__actions { margin-top: var(--space-8); }
+
+/* Páginas de categoría: misma superficie que la home, sin el alto de
+   viewport que la home necesita para el mockup y el marquee. */
+.hero--centered {
+  min-height: 0;
+  justify-content: flex-start;
+  padding-bottom: var(--space-24);
+  text-align: center;
+}
+
+.hero--centered .hero__content {
+  max-width: 640px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero--centered .hero__subtitle {
+  margin-inline: auto;
+}
+
+.hero--centered .hero__title-accent {
+  display: inline;
+}
+
+.hero--centered .hero__actions {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .hero--centered .hero__actions { width: auto; }
+}
 
 @media (min-width: 1024px) {
   .hero__grid { grid-template-columns: 1fr 1fr; gap: var(--space-24); }
