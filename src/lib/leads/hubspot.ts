@@ -52,10 +52,12 @@ async function postOnce(
   return { ok: res.ok, status: res.status, text };
 }
 
+export type HubSpotDelivery = "sent" | "unconfigured" | "failed";
+
 export async function submitToHubSpot(
   record: EvidenceRecord,
   cookieHeader: string | null,
-): Promise<void> {
+): Promise<HubSpotDelivery> {
   const portalId = process.env.HUBSPOT_PORTAL_ID;
   const formEnv = FORM_ID_ENV[record.form_id];
   const formGuid = process.env[formEnv];
@@ -69,7 +71,7 @@ export async function submitToHubSpot(
         !formGuid ? formEnv : null,
       ].filter(Boolean),
     });
-    return;
+    return "unconfigured";
   }
 
   const copy = getConsentCopy(record.locale, record.form_id);
@@ -108,11 +110,11 @@ export async function submitToHubSpot(
 
   try {
     const first = await postOnce(url, body);
-    if (first.ok) return;
+    if (first.ok) return "sent";
 
     await new Promise((r) => setTimeout(r, 400));
     const second = await postOnce(url, body);
-    if (second.ok) return;
+    if (second.ok) return "sent";
 
     console.error({
       event: "LEAD_DELIVERY_FAILED",
@@ -120,11 +122,13 @@ export async function submitToHubSpot(
       status: second.status,
       response: second.text,
     });
+    return "failed";
   } catch (error) {
     console.error({
       event: "LEAD_DELIVERY_FAILED",
       record,
       error: error instanceof Error ? error.message : "unknown",
     });
+    return "failed";
   }
 }

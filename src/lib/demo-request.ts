@@ -1,15 +1,5 @@
 import { validateEmail } from "@/lib/leads";
-
-/**
- * Public endpoint of the support backend that stores demo requests.
- * It is a public URL (no secrets involved), so it is safe to expose in the browser bundle.
- * Override it per environment with NEXT_PUBLIC_DEMO_REQUEST_ENDPOINT.
- */
-export const DEMO_REQUEST_ENDPOINT =
-  process.env.NEXT_PUBLIC_DEMO_REQUEST_ENDPOINT ?? "https://gestormercantil.com/api/soporte/demos";
-
-/** Fixed origin identifier agreed with the backend. */
-export const DEMO_REQUEST_ORIGIN = "ulpiano.es/demo";
+import type { Locale } from "@/lib/legal/consent-texts";
 
 /** Maximum length accepted by the backend for name, email and company. */
 export const DEMO_FIELD_MAX_LENGTH = 255;
@@ -56,22 +46,28 @@ export function validateDemoForm(values: DemoFormValues): DemoFieldErrors {
 }
 
 /**
- * Sends the demo request to the backend. Never throws and never exposes server messages:
- * the caller only receives a coarse status it can translate into user-facing copy.
+ * Sends the demo request through our API, which stores it in the support
+ * inbox and emails the team when SMTP is configured. Never throws and never
+ * exposes server messages: the caller only receives a coarse status.
  */
-export async function submitDemoRequest(values: DemoFormValues): Promise<DemoSubmitResult> {
+export async function submitDemoRequest(
+  values: DemoFormValues,
+  context: { locale: Locale; sourceUrl: string },
+): Promise<DemoSubmitResult> {
   try {
-    const response = await fetch(DEMO_REQUEST_ENDPOINT, {
+    const response = await fetch("/api/demo-request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "omit",
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MILLISECONDS),
       body: JSON.stringify({
-        nombre: values.fullName.trim(),
+        name: values.fullName.trim(),
         email: values.email.trim(),
-        despacho: values.company.trim(),
-        consentimiento_rgpd: true,
-        origen: DEMO_REQUEST_ORIGIN,
+        company: values.company.trim(),
+        consentProcessing: true,
+        consentMarketing: false,
+        locale: context.locale,
+        formId: "demo",
+        sourceUrl: context.sourceUrl,
       }),
     });
 

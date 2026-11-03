@@ -446,7 +446,10 @@ export function DemoClient() {
     setSending(true);
 
     try {
-      const result = await submitDemoRequest(values);
+      const result = await submitDemoRequest(values, {
+        locale,
+        sourceUrl: window.location.href,
+      });
 
       if (result.status === "success") {
         resetForm();

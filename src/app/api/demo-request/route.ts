@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateEmail } from "@/lib/leads";
 import { buildEvidenceRecord, rejectIfNoConsent } from "@/lib/legal/evidence";
-import { submitToHubSpot } from "@/lib/leads/hubspot";
+import { deliverLead, undeliveredResponse } from "@/lib/leads/deliver";
 
 export const runtime = "nodejs";
 export const preferredRegion = "fra1";
@@ -49,7 +49,9 @@ export async function POST(request: NextRequest) {
     };
 
     const record = buildEvidenceRecord(request, consent, payload);
-    await submitToHubSpot(record, request.headers.get("cookie"));
+    const outcome = await deliverLead(record, request.headers.get("cookie"));
+    const failed = undeliveredResponse(outcome);
+    if (failed) return failed;
 
     return NextResponse.json({ ok: true, submission_id: record.submission_id }, { status: 201 });
   } catch {
