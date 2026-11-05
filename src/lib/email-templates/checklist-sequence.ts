@@ -82,14 +82,13 @@ export const checklistSequence: EmailTemplate[] = [
   {
     id: "checklist-02-case-study",
     delayDays: 3,
-    subject: "De 15 horas a 6: un despacho en Girona y su expediente más complejo",
-    preheader: "Caso real: cómo un despacho mediano redujo el tiempo por expediente",
+    subject: "De 15 horas a 6: cómo se reparte un expediente complejo",
+    preheader: "Inventario, legítima e ISD sobre un expediente de ejemplo",
     body: (name: string) => wrap(`
 <tr>
   <td style="padding:0 24px 24px;font-size:15px;color:#1E293B;line-height:1.7;">
     <p>Hola${name ? ` ${name.split(" ")[0]}` : ""},</p>
-    <p>Un despacho de 4 personas en Girona tenía un problema que probablemente te resulte familiar:</p>
-    <p>Un expediente sucesorio con domicilio fiscal en Cataluña, 3 herederos, un inmueble con cargas, participaciones en una SL familiar y un elemento transfronterizo (heredero residente en Francia).</p>
+    <p>Un expediente sucesorio con domicilio fiscal en Cataluña, 3 herederos, un inmueble con cargas, participaciones en una SL familiar y un heredero residente en Francia. Así se reparte el trabajo, a modo de ejemplo:</p>
     <p><strong>Antes de Ulpiano:</strong></p>
     <ul style="padding-left:20px;color:#64748B;">
       <li>Cálculo de legítimas: 2 horas en Excel con verificación manual del CCCat</li>
@@ -124,7 +123,7 @@ export const checklistSequence: EmailTemplate[] = [
   <td style="padding:0 24px 24px;font-size:15px;color:#1E293B;line-height:1.7;">
     <p>Hola${name ? ` ${name.split(" ")[0]}` : ""},</p>
     <p>En la gestión sucesoria hay errores que se ven y errores que solo aparecen cuando es tarde.</p>
-    <p>Algunos de los más frecuentes que vemos en despachos que se acercan a Ulpiano:</p>
+    <p>Algunos de los errores más frecuentes al liquidar el ISD:</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;border:1px solid #CBD5E1;border-radius:8px;overflow:hidden;">
       <tr style="background:#F1F5F9;">
         <td style="padding:10px 16px;font-weight:600;font-size:13px;color:#64748B;border-bottom:1px solid #CBD5E1;">Error</td>

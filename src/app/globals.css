@@ -353,7 +353,7 @@ h3 {
     linear-gradient(180deg, #0A1630 0%, #0F1F3D 55%, #132B54 100%);
   color: var(--white);
   padding-top: calc(64px + var(--space-16));
-  padding-bottom: 140px;
+  padding-bottom: var(--space-16);
   position: relative;
   overflow: hidden;
   /* Full viewport: stack fallbacks so flex parents cannot collapse the section */
@@ -1019,22 +1019,11 @@ h3 {
   padding: var(--space-12) 0;
 }
 
-.testimonio__quote {
-  max-width: 720px;
-  margin: 0 auto;
-  text-align: left;
-  border-left: 3px solid var(--ulpiano-green);
-  padding-left: var(--space-6);
-}
-
-.testimonio__text { font-style: italic; font-size: 18px; line-height: 1.6; color: var(--white); }
-.testimonio__author { font-weight: 500; font-size: 14px; color: var(--fog); margin-top: var(--space-4); }
-
 .testimonio__metrics {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-8);
-  margin-top: var(--space-12);
+  margin-top: 0;
   text-align: center;
 }
 
@@ -1054,8 +1043,7 @@ h3 {
 
 @media (min-width: 768px) {
   .testimonio { padding: var(--space-24) 0; }
-  .testimonio__text { font-size: 22px; }
-  .testimonio__metrics { grid-template-columns: repeat(3, 1fr); margin-top: var(--space-16); }
+  .testimonio__metrics { grid-template-columns: repeat(3, 1fr); margin-top: 0; }
   .metric__number { font-size: 56px; }
 }
 

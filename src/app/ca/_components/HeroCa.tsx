@@ -2,11 +2,6 @@ import Link from 'next/link'
 import HeroVideoBackground from '../../_components/HeroVideoBackground'
 
 export default function HeroCa() {
-  const marqueeNames = [
-    'Bufete Casals', 'Notaría Puig', 'Fàbrega Legal', 'Asesoría Roca', 'Despacho García & Asoc.', 'Gestoría Pla', 'Bufete Martínez', 'Notaría Soler'
-  ];
-  const marqueeItems = [...marqueeNames, ...marqueeNames];
-
   return (
     <section className="hero bg-night relative overflow-hidden shrink-0" id="hero">
       <HeroVideoBackground />
@@ -32,24 +27,6 @@ export default function HeroCa() {
                 </svg>
               </Link>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 z-20 py-6 md:py-8 border-t border-white/10" style={{ background: 'rgba(8, 18, 40, 0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
-        <p className="eyebrow text-center mb-4 md:mb-6 text-white/40 text-[10px] md:text-[11px]">
-          PROFESSIONALS QUE CONFIEN EN ULPIANO
-        </p>
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{ display: 'flex', width: 'max-content', animation: 'scroll-left 30s linear infinite' }}>
-            {marqueeItems.map((name, index) => (
-              <span 
-                key={`${name}-${index}`} 
-                className="mx-6 md:mx-12 text-white font-medium text-[14px] md:text-[15px] tracking-[0.02em] whitespace-nowrap"
-              >
-                {name} &middot;
-              </span>
-            ))}
           </div>
         </div>
       </div>

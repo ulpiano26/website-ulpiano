@@ -150,7 +150,7 @@ export default function HomeCaPage() {
             PENSAT PER
           </div>
           <h2 className="h2" style={{ color: "var(--ink)", maxWidth: 640 }}>
-            Qui gestiona herències a Catalunya ho fa amb Ulpiano
+            Per a qui gestiona herències a Catalunya
           </h2>
           <div
             style={{

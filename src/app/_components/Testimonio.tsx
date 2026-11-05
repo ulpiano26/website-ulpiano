@@ -4,15 +4,6 @@ export default function Testimonio() {
   return (
     <section className="testimonio" id="testimonio">
       <div className="container">
-        <blockquote className="testimonio__quote reveal">
-          <p className="testimonio__text">
-            &ldquo;La automatización de los cálculos del ISD y el árbol familiar interactivo nos han
-            ahorrado horas de trabajo por expediente. El motor normativo catalán es lo que nos convenció.&rdquo;
-          </p>
-          <footer className="testimonio__author">
-            &mdash; Abogada, Despacho Sucesorio, Barcelona
-          </footer>
-        </blockquote>
         <div className="testimonio__metrics reveal">
           <div className="metric">
             <AnimatedCounter value={35} suffix="%" className="metric__number" />

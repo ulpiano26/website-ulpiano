@@ -110,12 +110,6 @@ const COPY = {
     rateLimited: "Has hecho demasiados intentos seguidos. Espera unos minutos y vuelve a intentarlo.",
     genericError: "No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos.",
     retry: "Reintentar",
-    quote1:
-      "Desde que usamos Ulpiano, la preparación de un expediente sucesorio nos lleva la mitad de tiempo. Y el cliente entiende perfectamente lo que paga.",
-    quote1Author: "— Marta R., Abogada | Despacho en Girona",
-    quote2:
-      "La visualización del árbol familiar y las simulaciones fiscales cambiaron la forma en que presentamos las herencias a nuestros clientes.",
-    quote2Author: "— Jordi P., Abogado Civilista | Barcelona",
     howEyebrow: "Cómo funciona",
     howTitle: "De formulario a sesión en 3 pasos",
     nextSteps: [
@@ -222,12 +216,6 @@ const COPY = {
     rateLimited: "Has fet massa intents seguits. Espera uns minuts i torna-ho a provar.",
     genericError: "No hem pogut enviar la teva sol·licitud. Torna-ho a provar d'aquí a uns minuts.",
     retry: "Torna-ho a provar",
-    quote1:
-      "Des que fem servir Ulpiano, la preparació d'un expedient successori ens porta la meitat de temps. I el client entén perfectament el que paga.",
-    quote1Author: "— Marta R., Advocada | Despatx a Girona",
-    quote2:
-      "La visualització de l'arbre familiar i les simulacions fiscals van canviar la manera com presentem les herències als nostres clients.",
-    quote2Author: "— Jordi P., Advocat civilista | Barcelona",
     howEyebrow: "Com funciona",
     howTitle: "Del formulari a la sessió en 3 passos",
     nextSteps: [
@@ -753,35 +741,6 @@ export function DemoClient() {
                   </>
                 )}
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ SOCIAL PROOF — Testimonial ═══ */}
-      <section className="bg-night py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(45,106,79,0.15)_0%,transparent_70%)] pointer-events-none" />
-        <div className="container relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
-            <div className="reveal">
-              <blockquote className="border-l-4 border-emerald-500 pl-6 m-0">
-                <p className="text-xl text-white leading-relaxed font-medium italic">
-                  &ldquo;{t.quote1}&rdquo;
-                </p>
-                <footer className="text-[15px] text-white/50 mt-5 font-medium">
-                  {t.quote1Author}
-                </footer>
-              </blockquote>
-            </div>
-            <div className="reveal" style={{ animationDelay: "150ms" }}>
-              <blockquote className="border-l-4 border-emerald-500 pl-6 m-0">
-                <p className="text-xl text-white leading-relaxed font-medium italic">
-                  &ldquo;{t.quote2}&rdquo;
-                </p>
-                <footer className="text-[15px] text-white/50 mt-5 font-medium">
-                  {t.quote2Author}
-                </footer>
-              </blockquote>
             </div>
           </div>
         </div>

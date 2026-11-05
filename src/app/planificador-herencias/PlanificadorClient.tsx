@@ -976,7 +976,7 @@ export function PlanificadorClient() {
         </div>
       </section>
 
-      {/* ——————————————— SECCIÓN 8: MÉTRICAS + TESTIMONIO ——————————————— */}
+      {/* ——————————————— SECCIÓN 8: MÉTRICAS ——————————————— */}
       <section style={{ background: "var(--night)", padding: "var(--space-24) 0" }}>
         <div className="container">
           <div className="metrics-grid">
@@ -997,41 +997,6 @@ export function PlanificadorClient() {
             />
           </div>
 
-          {/* Testimonial */}
-          <div
-            className="reveal"
-            style={{
-              maxWidth: 720,
-              margin: "var(--space-16) auto 0",
-              paddingLeft: "var(--space-6)",
-              borderLeft: "3px solid var(--ulpiano-green)",
-            }}
-          >
-            <blockquote
-              style={{
-                fontFamily: "var(--font-inter), 'Inter', sans-serif",
-                fontStyle: "italic",
-                fontSize: 22,
-                lineHeight: 1.5,
-                color: "var(--white)",
-                margin: 0,
-              }}
-              className="testimonial-quote"
-            >
-              &ldquo;Antes de Ulpiano, el inventario patrimonial era la parte m&aacute;s tediosa del
-              expediente. Ahora es la m&aacute;s r&aacute;pida. Y los datos fluyen directamente al
-              c&aacute;lculo del ISD sin volver a tocarlos.&rdquo;
-            </blockquote>
-            <p
-              style={{
-                marginTop: "var(--space-4)",
-                fontSize: 15,
-                color: "rgba(255,255,255,0.6)",
-              }}
-            >
-              — Abogada, despacho sucesorio, Girona
-            </p>
-          </div>
         </div>
       </section>
 
@@ -1160,9 +1125,6 @@ export function PlanificadorClient() {
         .comparison-mobile {
           display: none;
         }
-        .testimonial-quote {
-          font-size: 22px;
-        }
 
         @media (max-width: 1024px) {
           .hero-grid {
@@ -1210,9 +1172,6 @@ export function PlanificadorClient() {
           }
           .comparison-mobile {
             display: block;
-          }
-          .testimonial-quote {
-            font-size: 18px !important;
           }
           section#solicita-demo .h2 {
             font-size: 28px;

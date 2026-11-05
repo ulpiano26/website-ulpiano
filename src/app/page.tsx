@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Hero from './_components/Hero'
-import SocialProof from './_components/SocialProof'
 import Outputs from './_components/Outputs'
 import ParaQuien from './_components/ParaQuien'
 import ComoFunciona from './_components/ComoFunciona'

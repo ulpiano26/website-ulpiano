@@ -658,40 +658,6 @@ export function ChecklistSqueezeClient() {
         </div>
       </section>
 
-      {/* ═══ SOCIAL PROOF ═══ */}
-      <section style={{ background: "var(--night)", padding: "var(--space-16) 0" }}>
-        <div className="container">
-          <div className="reveal" style={{ textAlign: "center" }}>
-            <blockquote
-              style={{
-                maxWidth: 640,
-                margin: "0 auto",
-                borderLeft: "3px solid var(--ulpiano-green)",
-                paddingLeft: "var(--space-6)",
-                textAlign: "left",
-              }}
-            >
-              <p
-                style={{
-                  fontStyle: "italic",
-                  fontSize: 19,
-                  color: "var(--white)",
-                  lineHeight: 1.6,
-                }}
-              >
-                &ldquo;La primera vez que la usé, encontré dos puntos del expediente que habíamos
-                pasado por alto. Ahora es lo primero que abro al iniciar un caso.&rdquo;
-              </p>
-              <footer
-                style={{ fontSize: 14, color: "var(--fog)", marginTop: "var(--space-4)" }}
-              >
-                — Profesional del derecho sucesorio, Girona
-              </footer>
-            </blockquote>
-          </div>
-        </div>
-      </section>
-
       {/* ═══ FAQ ═══ */}
       <section style={{ background: "var(--white)", padding: "var(--space-16) 0" }}>
         <div className="container" style={{ maxWidth: 720 }}>

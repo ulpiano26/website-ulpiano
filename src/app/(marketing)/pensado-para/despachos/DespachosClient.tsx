@@ -131,18 +131,6 @@ const benefits = [
   },
 ];
 
-const testimonials = [
-  {
-    quote: "Desde que usamos Ulpiano, la preparación de un expediente sucesorio nos lleva la mitad de tiempo. Y el cliente entiende por fin lo que está firmando.",
-    author: "Marta R., Abogada",
-    location: "Despacho en Girona",
-  },
-  {
-    quote: "La visualización del árbol familiar y las simulaciones fiscales en tiempo real cambiaron radicalmente la forma en que presentamos las herencias a las familias.",
-    author: "Jordi P., Abogado Civilista",
-    location: "Barcelona",
-  },
-];
 
 /* =============================================
    MAIN COMPONENT
@@ -246,7 +234,7 @@ export function DespachosClient() {
       </section>
 
       {/* ═══ BENEFICIOS CLAVE ═══ */}
-      <section className="py-24 bg-white border-b border-slate-200">
+      <section className="py-24 bg-white">
         <div className="container">
           <div className="reveal text-center max-w-[700px] mx-auto mb-16">
             <span className="text-emerald-600 font-bold tracking-wider text-xs uppercase mb-3 block">
@@ -273,34 +261,6 @@ export function DespachosClient() {
         </div>
       </section>
 
-      {/* ═══ TESTIMONIOS ═══ */}
-      <section className="py-24 bg-slate-50">
-        <div className="container max-w-[1000px]">
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {testimonials.map((t, i) => (
-              <div key={i} className="reveal bg-white rounded-3xl p-8 lg:p-10 border border-slate-200 shadow-sm relative" style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="text-emerald-500 mb-6">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z" opacity="0.2"/>
-                  </svg>
-                </div>
-                <p className="text-lg font-medium text-ink leading-relaxed mb-8">
-                  "{t.quote}"
-                </p>
-                <div className="flex items-center gap-4 mt-auto">
-                  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-400 text-lg">
-                    {t.author.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-bold text-ink text-sm">{t.author}</div>
-                    <div className="text-sm text-slate-500">{t.location}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ═══ CROSS-LINKS ═══ */}
       <section className="py-16 bg-white border-t border-slate-200">
@@ -345,7 +305,7 @@ export function DespachosClient() {
             Eleva el estándar de tu despacho
           </h2>
           <p className="text-lg text-white/60 mb-10">
-            Únete a los profesionales que ya han transformado su práctica sucesoria con Ulpiano.
+            Prueba Ulpiano con un expediente real.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/demo" className="btn-primary px-8 py-3.5 shadow-[0_0_20px_rgba(45,106,79,0.4)]">
