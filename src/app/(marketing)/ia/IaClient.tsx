@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  ArrowRight,
   BookOpenCheck,
   FileSearch,
   PenLine,
@@ -154,158 +153,247 @@ const modules: Module[] = [
   },
 ];
 
+const iaItems = [
+  "Lectura y extracción de documentos del expediente",
+  "Redacción asistida del cuaderno particional y escritos",
+  "Consulta normativa con cita literal de artículos",
+  "Validación de coherencia del expediente",
+];
+
+const deterministicItems = [
+  "Cálculo de legítimas según el CCCat",
+  "Motor fiscal ISD (base, reducciones, bonificaciones)",
+  "Modelos tributarios 650, 651, 652, 653, 660",
+  "Escenarios sucesorios y simulaciones",
+];
+
 /* =============================================
-   PREVIEW RENDERERS
+   PREVIEW — mismo panel de datos que el hero
    ============================================= */
 
-function DocHeader({
+function PanelFrame({
   doc,
   Icon,
+  children,
 }: {
   doc: PreviewBlock["doc"];
   Icon: LucideIcon;
+  children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 border-b border-white/5 bg-white/[0.02] px-5 py-4">
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 shadow-inner">
-        <Icon size={20} strokeWidth={2} />
-      </span>
-      <div>
-        <p className="text-[15px] font-semibold text-white">{doc.title}</p>
-        <p className="text-[12px] font-medium text-white/50">{doc.meta}</p>
+    <div className="relative">
+      <div
+        className="pointer-events-none absolute -inset-8 -z-10 rounded-full blur-2xl"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(64,145,108,0.42), rgba(59,104,196,0.16) 55%, transparent)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="relative overflow-hidden bg-white"
+        style={{
+          borderRadius: 16,
+          border: "1px solid rgba(255,255,255,0.12)",
+          boxShadow:
+            "0 40px 80px -20px rgba(0,0,0,0.55), 0 20px 45px -15px rgba(45,106,79,0.25), 0 4px 12px rgba(0,0,0,0.2)",
+          color: "var(--ink)",
+        }}
+      >
+        <div
+          className="flex items-center gap-3 px-4 py-3"
+          style={{ borderBottom: "1px solid var(--mist)" }}
+        >
+          <span
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+            style={{ background: "var(--green-bg)", color: "var(--ulpiano-green)" }}
+          >
+            <Icon size={15} strokeWidth={2} aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-[14px] font-semibold leading-5">{doc.title}</p>
+            <p className="text-[12px] leading-4" style={{ color: "var(--slate)" }}>
+              {doc.meta}
+            </p>
+          </div>
+        </div>
+        <div className="px-6 py-5">{children}</div>
       </div>
     </div>
+  );
+}
+
+function DataRow({
+  icon,
+  label,
+  trailing,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  trailing: React.ReactNode;
+}) {
+  return (
+    <li
+      className="flex items-center gap-3 border-b border-[var(--mist)] py-3 last:border-b-0"
+      style={{ minHeight: 56 }}
+    >
+      <span
+        className="grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+        style={{ background: "var(--green-bg)", color: "var(--ulpiano-green)" }}
+      >
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1 text-[13px] leading-5">{label}</span>
+      <span className="max-w-[62%] shrink text-right leading-5">{trailing}</span>
+    </li>
   );
 }
 
 function ExtractPreview({ block }: { block: PreviewBlock }) {
   return (
-    <div className="h-full flex flex-col">
-      <DocHeader doc={block.doc} Icon={FileSearch} />
-      <div className="p-5 flex-1 flex flex-col justify-center">
-        <div className="rounded-xl border border-white/10 bg-white/5 overflow-hidden">
-          <div className="border-b border-white/10 px-5 py-3 text-[11px] uppercase font-bold tracking-[0.15em] text-emerald-400 bg-white/5">
-            Datos extraídos por IA
-          </div>
-          <ul className="divide-y divide-white/5">
-            {block.fields?.map((f) => (
-              <li
-                key={f.key}
-                className="flex items-center justify-between px-5 py-3.5 hover:bg-white/5 transition-colors"
-              >
-                <span className="text-[14px] font-medium text-white/60">{f.key}</span>
-                <span className="font-mono text-[13px] font-medium text-white">
-                  {f.value}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
+    <PanelFrame doc={block.doc} Icon={FileSearch}>
+      <p className="mb-1 text-[12px] font-medium leading-[18px]" style={{ color: "var(--slate)" }}>
+        Datos extraídos por IA
+      </p>
+      <ul>
+        {block.fields?.map((field) => (
+          <DataRow
+            key={field.key}
+            icon={<FileSearch size={14} strokeWidth={2} aria-hidden="true" />}
+            label={field.key}
+            trailing={
+              <span className="font-mono text-[13px]" style={{ color: "var(--ink)" }}>
+                {field.value}
+              </span>
+            }
+          />
+        ))}
+      </ul>
+    </PanelFrame>
   );
 }
 
 function DraftPreview({ block }: { block: PreviewBlock }) {
   return (
-    <div className="h-full flex flex-col">
-      <DocHeader doc={block.doc} Icon={PenLine} />
-      <div className="p-5 flex-1 flex flex-col justify-center">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6 font-serif shadow-inner relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/50" />
-          {block.draft?.map((l, i) => (
+    <PanelFrame doc={block.doc} Icon={PenLine}>
+      <div
+        className="relative px-5 py-4"
+        style={{
+          background: "var(--surface)",
+          borderRadius: 8,
+          borderLeft: "3px solid var(--ulpiano-green)",
+        }}
+      >
+        {block.draft?.map((line, index) =>
+          line.highlight ? (
             <p
-              key={i}
-              className={`text-[14.5px] leading-relaxed ${
-                l.highlight
-                  ? "text-white/90 bg-emerald-500/10 px-2 py-0.5 rounded -mx-2"
-                  : "mt-4 mb-2 text-[12px] font-bold uppercase tracking-[0.15em] text-emerald-500 font-sans"
-              }`}
+              key={index}
+              className="text-[14px] leading-relaxed"
+              style={{
+                color: "var(--ink)",
+                background: "var(--green-bg)",
+                borderRadius: 6,
+                padding: "4px 8px",
+                marginTop: index === 0 ? 0 : 8,
+              }}
             >
-              {l.line}
+              {line.line}
             </p>
-          ))}
-        </div>
+          ) : (
+            <p
+              key={index}
+              className="text-[11px] font-semibold uppercase"
+              style={{
+                letterSpacing: "0.08em",
+                color: "var(--ulpiano-green)",
+                marginTop: index === 0 ? 0 : 16,
+                marginBottom: 4,
+              }}
+            >
+              {line.line}
+            </p>
+          ),
+        )}
       </div>
-    </div>
+    </PanelFrame>
   );
 }
 
 function ConsultPreview({ block }: { block: PreviewBlock }) {
   return (
-    <div className="h-full flex flex-col">
-      <DocHeader doc={block.doc} Icon={BookOpenCheck} />
-      <div className="p-5 flex-1 flex flex-col justify-center gap-4">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-5 relative">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/40 mb-2">
+    <PanelFrame doc={block.doc} Icon={BookOpenCheck}>
+      <div className="flex flex-col gap-3">
+        <div className="rounded-lg px-4 py-3" style={{ background: "var(--surface)" }}>
+          <p
+            className="mb-1 text-[11px] font-medium uppercase"
+            style={{ letterSpacing: "0.06em", color: "var(--slate)" }}
+          >
             Pregunta del abogado
           </p>
-          <p className="text-[15px] font-medium text-white/90">{block.question}</p>
+          <p className="text-[14px] leading-relaxed" style={{ color: "var(--ink)" }}>
+            {block.question}
+          </p>
         </div>
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles size={14} className="text-emerald-400" />
-            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-emerald-400">
-              Respuesta de Ulpiano IA
-            </p>
-          </div>
-          <p className="text-[15px] leading-relaxed text-white">
+        <div
+          className="rounded-lg px-4 py-3"
+          style={{ background: "var(--green-bg)" }}
+        >
+          <p
+            className="mb-1 flex items-center gap-1.5 text-[11px] font-medium uppercase"
+            style={{ letterSpacing: "0.06em", color: "var(--ulpiano-green)" }}
+          >
+            <Sparkles size={12} strokeWidth={2} aria-hidden="true" />
+            Respuesta de Ulpiano IA
+          </p>
+          <p className="text-[14px] leading-relaxed" style={{ color: "var(--ink)" }}>
             {block.answer?.text}
           </p>
-          <div className="mt-4 pt-3 border-t border-emerald-500/20 flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            <p className="font-mono text-[12px] font-medium text-emerald-400/80">
-              {block.answer?.citation}
-            </p>
-          </div>
+          <p className="mt-3 font-mono text-[12px]" style={{ color: "var(--ulpiano-green)" }}>
+            {block.answer?.citation}
+          </p>
         </div>
       </div>
-    </div>
+    </PanelFrame>
   );
 }
 
-function ValidatePreview({ block }: { block: PreviewBlock }) {
-  const statusColors: Record<string, string> = {
-    ok: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
-    warn: "text-amber-400 bg-amber-400/10 border-amber-400/20",
-    error: "text-red-400 bg-red-400/10 border-red-400/20",
-  };
-  
-  const dotColors: Record<string, string> = {
-    ok: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
-    warn: "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]",
-    error: "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]",
-  };
+const statusBadgeClass: Record<"ok" | "warn" | "error", string> = {
+  ok: "badge",
+  warn: "badge badge--warning",
+  error: "badge",
+};
 
+const statusLabel: Record<"ok" | "warn" | "error", string> = {
+  ok: "Correcto",
+  warn: "Revisar",
+  error: "Error",
+};
+
+function ValidatePreview({ block }: { block: PreviewBlock }) {
   return (
-    <div className="h-full flex flex-col">
-      <DocHeader doc={block.doc} Icon={ShieldCheck} />
-      <div className="p-5 flex-1 flex flex-col justify-center">
-        <ul className="space-y-3">
-          {block.checks?.map((c, i) => (
-            <li
-              key={i}
-              className={`flex items-center gap-4 rounded-xl border px-4 py-3.5 transition-colors ${statusColors[c.status]}`}
-            >
+    <PanelFrame doc={block.doc} Icon={ShieldCheck}>
+      <ul>
+        {block.checks?.map((check) => (
+          <DataRow
+            key={check.label}
+            icon={<ShieldCheck size={14} strokeWidth={2} aria-hidden="true" />}
+            label={check.label}
+            trailing={
               <span
-                className={`h-2.5 w-2.5 flex-shrink-0 rounded-full ${dotColors[c.status]}`}
-                aria-hidden="true"
-              />
-              <span className="text-[14px] font-medium text-white/90">{c.label}</span>
-              <span
-                className="ml-auto text-[11px] font-bold uppercase tracking-[0.1em]"
+                className={statusBadgeClass[check.status]}
+                style={
+                  check.status === "error"
+                    ? { background: "var(--error-bg)", color: "var(--error)" }
+                    : undefined
+                }
               >
-                {c.status === "ok"
-                  ? "Correcto"
-                  : c.status === "warn"
-                    ? "Revisar"
-                    : "Error"}
+                {statusLabel[check.status]}
               </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+            }
+          />
+        ))}
+      </ul>
+    </PanelFrame>
   );
 }
 
@@ -316,198 +404,247 @@ function Preview({ block }: { block: PreviewBlock }) {
   return <ValidatePreview block={block} />;
 }
 
+function CompareCard({
+  tone,
+  title,
+  icon,
+  items,
+}: {
+  tone: "ia" | "engine";
+  title: string;
+  icon: React.ReactNode;
+  items: string[];
+}) {
+  const isIa = tone === "ia";
+  return (
+    <article className="card !p-0 flex h-full flex-col overflow-hidden">
+      <div
+        className="flex items-center gap-3 px-6 py-5"
+        style={{ background: isIa ? "var(--green-bg)" : "var(--night)" }}
+      >
+        <span
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+          style={
+            isIa
+              ? { background: "var(--white)", color: "var(--ulpiano-green)" }
+              : { background: "rgba(255,255,255,0.12)", color: "var(--white)" }
+          }
+        >
+          {icon}
+        </span>
+        <h3
+          className="m-0"
+          style={{ color: isIa ? "var(--ulpiano-green)" : "var(--white)", fontSize: 20 }}
+        >
+          {title}
+        </h3>
+      </div>
+      <ul className="flex flex-1 flex-col gap-4 px-6 py-6">
+        {items.map((item) => (
+          <li
+            key={item}
+            className="flex items-start gap-3 text-[15px] leading-relaxed"
+            style={{ color: "var(--ink)" }}
+          >
+            <span
+              className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full"
+              style={{ background: isIa ? "var(--ulpiano-green)" : "var(--night)" }}
+              aria-hidden="true"
+            />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
+
 /* =============================================
    MAIN CLIENT
    ============================================= */
 
 export default function IaClient() {
   const [activeId, setActiveId] = useState(modules[0].id);
-  const active = modules.find((m) => m.id === activeId) ?? modules[0];
+  const active = modules.find((module) => module.id === activeId) ?? modules[0];
 
   return (
-    <main className="bg-night text-white font-sans min-h-screen">
-      {/* ═══ HERO ═══ */}
-      <section className="relative overflow-hidden pt-[calc(64px+5rem)] pb-24 lg:pb-32"
+    <>
+      <section
+        className="relative overflow-hidden text-white"
         style={{
-          backgroundImage: `
-            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-          backgroundPosition: 'center top'
+          background:
+            "radial-gradient(ellipse 70% 55% at 80% 15%, rgba(56, 120, 220, 0.22) 0%, transparent 65%), linear-gradient(180deg, #0A1630 0%, #0F1F3D 55%, #132B54 100%)",
+          paddingTop: "calc(64px + var(--space-16))",
+          paddingBottom: "var(--space-16)",
+          minHeight: "100svh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
-        {/* Background glow effects */}
-        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,var(--ulpiano-green)_0%,transparent_50%)] opacity-20 blur-[100px] pointer-events-none" />
-        <div className="absolute -top-[10%] -right-[10%] w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(45,106,79,0.3)_0%,transparent_60%)] opacity-30 blur-[80px] pointer-events-none" />
-
+        <div className="hero__orb" aria-hidden="true" />
         <div className="container relative z-10">
-          <div className="max-w-[800px] mx-auto text-center animate-fade-in-up">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="h-[1px] w-8 bg-emerald-500/50" />
-              <span className="text-emerald-400/90 text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-2">
-                <Sparkles size={14} strokeWidth={2} />
-                Ulpiano IA
-              </span>
-              <div className="h-[1px] w-8 bg-emerald-500/50" />
+          <div className="hero__grid">
+            <div>
+              <p className="eyebrow hero__eyebrow animate-fade-in-up">Ulpiano IA</p>
+              <h1 className="hero__title text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-balance animate-fade-in-up leading-tight text-white">
+                Inteligencia artificial donde aporta.
+                <br />
+                <span className="hero__title-accent">Motor determinista donde es crítico.</span>
+              </h1>
+              <p
+                className="hero__subtitle text-base md:text-lg text-white/60 animate-fade-in-up"
+                style={{ animationDelay: "100ms" }}
+              >
+                Ulpiano IA se aplica a lo que la inteligencia artificial hace bien: leer, redactar,
+                consultar y validar. El cálculo del ISD y las legítimas se resuelven con motores
+                deterministas auditables.{" "}
+                <strong
+                  className="font-semibold"
+                  style={{
+                    color: "var(--ulpiano-green)",
+                    background: "var(--green-bg)",
+                    borderRadius: 6,
+                    padding: "1px 6px",
+                  }}
+                >
+                  Nunca con IA.
+                </strong>
+              </p>
+
+              <nav
+                aria-label="Capacidades de Ulpiano IA"
+                className="mt-6 flex flex-wrap gap-2 animate-fade-in-up"
+                style={{ animationDelay: "200ms" }}
+              >
+                {modules.map((module) => {
+                  const isActive = module.id === activeId;
+                  return (
+                    <button
+                      key={module.id}
+                      type="button"
+                      onClick={() => setActiveId(module.id)}
+                      aria-pressed={isActive}
+                      className="rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--green-light)]"
+                      style={
+                        isActive
+                          ? {
+                              background: "var(--white)",
+                              color: "var(--night)",
+                              border: "1px solid var(--white)",
+                            }
+                          : {
+                              background: "rgba(255,255,255,0.08)",
+                              color: "rgba(255,255,255,0.92)",
+                              border: "1px solid rgba(255,255,255,0.16)",
+                            }
+                      }
+                    >
+                      {module.label}
+                    </button>
+                  );
+                })}
+              </nav>
+
+              <div
+                className="mt-8 flex flex-col sm:flex-row sm:items-center gap-4 animate-fade-in-up"
+                style={{ animationDelay: "300ms" }}
+              >
+                <Link
+                  href="/demo"
+                  className="btn-primary w-full sm:w-auto justify-center shadow-[0_0_20px_rgba(45,106,79,0.4)] hover:shadow-[0_0_30px_rgba(45,106,79,0.6)]"
+                >
+                  Reserva tu demo
+                </Link>
+              </div>
             </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-white mb-6">
-              Inteligencia artificial donde aporta.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[var(--ulpiano-green)]">
-                Motor determinista donde es crítico.
-              </span>
-            </h1>
-            
-            <p className="text-lg md:text-xl leading-relaxed text-white/60 max-w-[700px] mx-auto">
-              Ulpiano IA se aplica a lo que la inteligencia artificial hace bien: leer, redactar, consultar y validar. El cálculo del ISD y las legítimas se resuelven con motores deterministas auditables. <strong className="text-white font-medium">Nunca con IA.</strong>
-            </p>
-          </div>
 
-          {/* TABS + PREVIEW */}
-          <div className="mt-20 lg:mt-28 grid gap-8 lg:grid-cols-[320px_1fr] lg:gap-12 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            {/* Tabs */}
-            <nav
-              aria-label="Capacidades de Ulpiano IA"
-              className="flex flex-col gap-3"
-            >
-              {modules.map((m) => {
-                const isActive = m.id === activeId;
-                return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => setActiveId(m.id)}
-                    className={`group relative flex items-center justify-between rounded-xl px-5 py-4 text-left transition-all duration-300 overflow-hidden ${
-                      isActive
-                        ? "bg-white/10 border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.2)] scale-[1.02]"
-                        : "bg-white/5 border-transparent hover:bg-white/[0.08] hover:border-white/10"
-                    } border`}
-                    aria-pressed={isActive}
-                  >
-                    {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
-                    )}
-                    <div className="flex items-center gap-4">
-                      <div className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${isActive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/5 text-white/50 group-hover:text-white/80'}`}>
-                        <m.Icon size={18} strokeWidth={2} />
-                      </div>
-                      <span className={`text-[16px] font-semibold transition-colors ${isActive ? 'text-white' : 'text-white/60 group-hover:text-white'}`}>
-                        {m.label}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </nav>
-
-            {/* Preview Area */}
-            <div className="flex flex-col h-full">
-              <div className="mb-8 max-w-[600px] animate-fade-in-up" key={`header-${activeId}`}>
-                <div className="inline-flex items-center gap-2 mb-3">
-                  <div className="h-[1px] w-6 bg-emerald-500/50" />
-                  <p className="font-bold text-[12px] uppercase tracking-[0.2em] text-emerald-400">
-                    {active.tagline}
-                  </p>
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-                  {active.title}
-                </h2>
-                <p className="text-[16.5px] leading-relaxed text-white/60">
-                  {active.description}
-                </p>
-              </div>
-              
-              <div className="flex-1 relative rounded-2xl border border-white/10 shadow-[0_30px_100px_-15px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(45,106,79,0.3)] bg-[#09090b]/80 backdrop-blur-xl overflow-hidden animate-fade-in-up" key={`preview-${activeId}`}>
-                <Preview block={active.preview} />
-              </div>
-              
-              <ul className="mt-8 grid gap-4 sm:grid-cols-3 animate-fade-in-up" key={`bullets-${activeId}`}>
-                {active.bullets.map((b, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-4 text-[14px] leading-relaxed text-white/70"
-                  >
-                    <span className="mt-0.5 text-emerald-500 flex-shrink-0">
-                      <Sparkles size={16} strokeWidth={2} />
-                    </span>
-                    <span className="font-medium">{b}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="hero__visual animate-fade-in-up" style={{ animationDelay: "150ms" }}>
+              <Preview key={active.id} block={active.preview} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══ TRUST BLOCK — IA vs Determinista ═══ */}
-      <section className="border-t border-white/10 bg-[#09090b] py-24 relative overflow-hidden">
-        <div className="container relative z-10">
-          <div className="mb-14 max-w-[700px] text-center mx-auto animate-fade-in-up">
-            <p className="mb-4 font-bold text-[12px] uppercase tracking-[0.2em] text-white/40">
+      <section className="bg-white py-12 md:py-20" id="capacidad-activa" aria-live="polite">
+        <div className="container">
+          <div className="max-w-[720px]">
+            <p className="eyebrow" style={{ color: "var(--slate)" }}>
+              {active.tagline}
+            </p>
+            <h2 className="mt-3" style={{ color: "var(--ink)" }}>
+              {active.title}
+            </h2>
+            <p className="mt-3 text-[17px] leading-relaxed" style={{ color: "var(--slate)" }}>
+              {active.description}
+            </p>
+          </div>
+          <ul className="mt-10 grid gap-6 md:grid-cols-3">
+            {active.bullets.map((bullet) => (
+              <li key={bullet} className="card">
+                <span className="output-card__icon" aria-hidden="true">
+                  <active.Icon size={22} strokeWidth={2} />
+                </span>
+                <p className="mt-4 text-[15px] leading-relaxed" style={{ color: "var(--slate)" }}>
+                  {bullet}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="py-12 md:py-20" style={{ background: "var(--surface)" }}>
+        <div className="container">
+          <div className="mb-10 max-w-[720px]">
+            <p className="eyebrow" style={{ color: "var(--slate)" }}>
               La frontera es clara
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-6">
+            <h2 className="mt-3" style={{ color: "var(--ink)" }}>
               La IA nunca calcula la cuota del ISD
             </h2>
-            <p className="text-[17px] leading-relaxed text-white/60">
-              Todo lo que pueda acabar ante Hacienda, un juez o un cliente, lo resuelve un motor determinista con la norma citada y cada paso auditable. <strong className="text-white font-medium">Ulpiano IA acompaña; no decide lo que no debe decidir.</strong>
+            <p className="mt-3 text-[17px] leading-relaxed" style={{ color: "var(--slate)" }}>
+              Todo lo que pueda acabar ante Hacienda, un juez o un cliente, lo resuelve un motor
+              determinista con la norma citada y cada paso auditable.{" "}
+              <strong className="font-semibold" style={{ color: "var(--ink)" }}>
+                Ulpiano IA acompaña; no decide lo que no debe decidir.
+              </strong>
             </p>
           </div>
-
-          <div className="grid gap-6 md:grid-cols-2 max-w-[900px] mx-auto animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-[50px] group-hover:bg-emerald-500/20 transition-colors" />
-              <div className="mb-6 flex items-center gap-2 font-bold text-[12px] uppercase tracking-[0.15em] text-emerald-400">
-                <Sparkles size={16} strokeWidth={2} />
-                Con Ulpiano IA
-              </div>
-              <ul className="space-y-4 text-[15.5px] text-white/80 font-medium">
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /> Lectura y extracción de documentos del expediente</li>
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /> Redacción asistida del cuaderno particional y escritos</li>
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /> Consulta normativa con cita literal de artículos</li>
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" /> Validación de coherencia del expediente</li>
-              </ul>
-            </div>
-            
-            <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-8 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] group-hover:bg-blue-500/20 transition-colors" />
-              <div className="mb-6 flex items-center gap-2 font-bold text-[12px] uppercase tracking-[0.15em] text-blue-400">
-                <ShieldCheck size={16} strokeWidth={2} />
-                Con motor determinista
-              </div>
-              <ul className="space-y-4 text-[15.5px] text-white/80 font-medium">
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 flex-shrink-0" /> Cálculo de legítimas según el CCCat</li>
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 flex-shrink-0" /> Motor fiscal ISD (base, reducciones, bonificaciones)</li>
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 flex-shrink-0" /> Modelos tributarios 650, 651, 652, 653, 660</li>
-                <li className="flex items-start gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 flex-shrink-0" /> Escenarios sucesorios y simulaciones</li>
-              </ul>
-            </div>
+          <div className="grid items-stretch gap-6 md:grid-cols-2">
+            <CompareCard
+              tone="ia"
+              title="Con Ulpiano IA"
+              icon={<Sparkles size={22} strokeWidth={2} aria-hidden="true" />}
+              items={iaItems}
+            />
+            <CompareCard
+              tone="engine"
+              title="Con motor determinista"
+              icon={<ShieldCheck size={22} strokeWidth={2} aria-hidden="true" />}
+              items={deterministicItems}
+            />
           </div>
         </div>
       </section>
 
-      {/* ═══ CTA ═══ */}
-      <section className="py-24 relative">
-        <div className="container relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-10 rounded-3xl border border-white/10 bg-white/5 p-10 sm:p-14 backdrop-blur-xl shadow-2xl animate-fade-in-up">
-            <div className="max-w-[600px] text-center lg:text-left">
-              <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-                Ve Ulpiano IA sobre un expediente real
-              </h3>
-              <p className="text-[17px] leading-relaxed text-white/60">
-                25 minutos. Traemos un expediente sucesorio y te enseñamos dónde la IA ayuda y dónde el motor determinista toma el relevo. Sin compromiso.
-              </p>
+      <section className="cta-final">
+        <div className="cta-final__orb" aria-hidden="true" />
+        <div className="container">
+          <div className="cta-final__content">
+            <h2 className="cta-final__title">Ve Ulpiano IA sobre un expediente real</h2>
+            <p className="cta-final__subtitle">
+              25 minutos. Traemos un expediente sucesorio y te enseñamos dónde la IA ayuda y dónde
+              el motor determinista toma el relevo. Sin compromiso.
+            </p>
+            <div className="cta-final__btn">
+              <Link href="/demo" className="btn-primary btn-primary--large">
+                Reserva tu demo
+              </Link>
             </div>
-            <Link
-              href="/demo"
-              className="btn-primary shadow-[0_0_20px_rgba(45,106,79,0.4)] hover:shadow-[0_0_30px_rgba(45,106,79,0.6)] px-8 py-4 text-[16px] whitespace-nowrap"
-            >
-              Reserva tu demo <ArrowRight size={18} className="ml-2 inline" />
-            </Link>
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }
