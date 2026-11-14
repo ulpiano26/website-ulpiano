@@ -13,6 +13,7 @@ function summary(record: EvidenceRecord): { subject: string; text: string; reply
     `Formulario: ${record.form_id}`,
     `Nombre: ${text(payload.name)}`,
     `Email: ${text(payload.email)}`,
+    `Teléfono: ${text(payload.phone)}`,
     `Despacho o empresa: ${text(payload.company)}`,
     `Asunto: ${text(payload.subject)}`,
     `Mensaje: ${text(payload.message)}`,

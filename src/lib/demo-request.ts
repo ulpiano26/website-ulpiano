@@ -4,17 +4,25 @@ import type { Locale } from "@/lib/legal/consent-texts";
 /** Maximum length accepted by the backend for name, email and company. */
 export const DEMO_FIELD_MAX_LENGTH = 255;
 
+/** Optional free-text field ("what would you like to see?"). */
+export const DEMO_MESSAGE_MAX_LENGTH = 500;
+
+/** Optional phone. Same limit as the support backend column. */
+export const DEMO_PHONE_MAX_LENGTH = 30;
+
 const REQUEST_TIMEOUT_MILLISECONDS = 15_000;
 
 export type DemoFormValues = {
   fullName: string;
   email: string;
+  phone: string;
   company: string;
+  message: string;
 };
 
 export type DemoFieldName = keyof DemoFormValues;
 
-export type DemoFieldErrorCode = "required" | "invalidEmail" | "tooLong";
+export type DemoFieldErrorCode = "required" | "invalidEmail" | "invalidPhone" | "tooLong";
 
 export type DemoFieldErrors = Partial<Record<DemoFieldName, DemoFieldErrorCode>>;
 
@@ -25,13 +33,24 @@ export type DemoSubmitResult =
   | { status: "failed" };
 
 /** Order in which fields appear in the form, used to focus the first invalid one. */
-export const DEMO_FIELD_ORDER: readonly DemoFieldName[] = ["fullName", "email", "company"];
+export const DEMO_FIELD_ORDER: readonly DemoFieldName[] = ["fullName", "email", "phone", "company", "message"];
+
+/** Fields the person must fill in. Phone and message are optional. */
+const DEMO_REQUIRED_FIELDS: readonly DemoFieldName[] = ["fullName", "email", "company"];
+
+const PHONE_ALLOWED_CHARACTERS = /^[+\d\s().-]+$/;
+const PHONE_MIN_DIGITS = 6;
+
+export function isValidDemoPhone(phone: string): boolean {
+  const digitCount = phone.replace(/\D/g, "").length;
+  return PHONE_ALLOWED_CHARACTERS.test(phone) && digitCount >= PHONE_MIN_DIGITS && phone.length <= DEMO_PHONE_MAX_LENGTH;
+}
 
 /** Client-side validation. Values are checked after trimming surrounding whitespace. */
 export function validateDemoForm(values: DemoFormValues): DemoFieldErrors {
   const errors: DemoFieldErrors = {};
 
-  for (const fieldName of DEMO_FIELD_ORDER) {
+  for (const fieldName of DEMO_REQUIRED_FIELDS) {
     const trimmedValue = values[fieldName].trim();
     if (trimmedValue.length === 0) {
       errors[fieldName] = "required";
@@ -41,6 +60,11 @@ export function validateDemoForm(values: DemoFormValues): DemoFieldErrors {
       errors[fieldName] = "invalidEmail";
     }
   }
+
+  const phone = values.phone.trim();
+  if (phone && !isValidDemoPhone(phone)) errors.phone = "invalidPhone";
+
+  if (values.message.trim().length > DEMO_MESSAGE_MAX_LENGTH) errors.message = "tooLong";
 
   return errors;
 }
@@ -63,6 +87,8 @@ export async function submitDemoRequest(
         name: values.fullName.trim(),
         email: values.email.trim(),
         company: values.company.trim(),
+        phone: values.phone.trim(),
+        message: values.message.trim(),
         consentProcessing: true,
         consentMarketing: false,
         locale: context.locale,

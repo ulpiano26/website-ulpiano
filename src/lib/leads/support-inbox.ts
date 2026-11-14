@@ -27,9 +27,12 @@ export async function forwardToSupportInbox(record: EvidenceRecord): Promise<Inb
     "https://gestormercantil.com/api/soporte/demos";
 
   const payload = record.payload;
-  const detail = [text(payload.subject), text(payload.message), text(payload.source)]
-    .filter(Boolean)
-    .join(" · ");
+  const isDemo = record.form_id === "demo";
+  // Demo requests keep the company clean and send phone and comment in their
+  // own fields; the other forms still pack their detail into "despacho".
+  const detail = isDemo
+    ? ""
+    : [text(payload.subject), text(payload.message), text(payload.source)].filter(Boolean).join(" · ");
   const desk = text(payload.company) || FORM_LABEL[record.form_id];
   const despacho = (detail ? `${desk}: ${detail}` : desk).slice(0, 255);
 
@@ -44,6 +47,8 @@ export async function forwardToSupportInbox(record: EvidenceRecord): Promise<Inb
         nombre: text(payload.name).slice(0, 255),
         email: text(payload.email),
         despacho,
+        ...(isDemo && text(payload.phone) ? { telefono: text(payload.phone).slice(0, 30) } : {}),
+        ...(isDemo && text(payload.message) ? { mensaje: text(payload.message) } : {}),
         consentimiento_rgpd: true,
         origen: `ulpiano.es/${record.form_id}`,
       }),

@@ -8,6 +8,8 @@ import ConsentCheckbox from "@/components/forms/ConsentCheckbox";
 import { localeFromPathname } from "@/lib/legal/consent-texts";
 import {
   DEMO_FIELD_MAX_LENGTH,
+  DEMO_MESSAGE_MAX_LENGTH,
+  DEMO_PHONE_MAX_LENGTH,
   DEMO_FIELD_ORDER,
   submitDemoRequest,
   validateDemoForm,
@@ -88,12 +90,17 @@ const COPY = {
     meanwhileBody: "Explora en detalle todas las soluciones que verás durante la sesión.",
     seeSolutions: "Ver soluciones",
     formTitle: "Reserva tu sesión",
-    formIntro: "3 campos — menos de 30 segundos.",
+    formIntro: "Menos de 30 segundos. Te contestamos en 24 h laborables.",
     name: "Nombre completo",
     namePlaceholder: "María García López",
     email: "Email profesional",
     company: "Despacho / Empresa",
     companyPlaceholder: "Nombre del despacho",
+    phone: "Teléfono",
+    phonePlaceholder: "600 000 000",
+    message: "¿Qué te gustaría ver?",
+    messagePlaceholder: "Ej.: el cálculo del ISD de una herencia catalana",
+    optional: "opcional",
     sending: "Enviando…",
     submit: "Ver Ulpiano en acción",
     noCommitment: "Sin compromiso · No pedimos datos de pago",
@@ -101,9 +108,12 @@ const COPY = {
       required: {
         fullName: "Escribe tu nombre completo.",
         email: "Escribe tu correo electrónico.",
+        phone: "",
         company: "Escribe el nombre de tu despacho o empresa.",
+        message: "",
       },
       invalidEmail: "Introduce un correo válido, por ejemplo nombre@despacho.es.",
+      invalidPhone: "Introduce un teléfono válido, por ejemplo 600 000 000 o +34 600 000 000.",
       tooLong: "Este campo admite un máximo de 255 caracteres.",
     },
     serverInvalid: "Algún dato no es válido. Revisa los campos e inténtalo de nuevo.",
@@ -194,12 +204,17 @@ const COPY = {
     meanwhileBody: "Explora en detall totes les solucions que veuràs durant la sessió.",
     seeSolutions: "Veure solucions",
     formTitle: "Reserva la teva sessió",
-    formIntro: "3 camps — menys de 30 segons.",
+    formIntro: "Menys de 30 segons. Et responem en 24 h laborables.",
     name: "Nom complet",
     namePlaceholder: "Maria García López",
     email: "Correu professional",
     company: "Despatx / Empresa",
     companyPlaceholder: "Nom del despatx",
+    phone: "Telèfon",
+    phonePlaceholder: "600 000 000",
+    message: "Què t'agradaria veure?",
+    messagePlaceholder: "Ex.: el càlcul de l'ISD d'una herència catalana",
+    optional: "opcional",
     sending: "Enviant…",
     submit: "Veure Ulpiano en acció",
     noCommitment: "Sense compromís · No demanem dades de pagament",
@@ -207,8 +222,11 @@ const COPY = {
       required: {
         fullName: "Escriu el teu nom complet.",
         email: "Escriu el teu correu electrònic.",
+        phone: "",
         company: "Escriu el nom del teu despatx o empresa.",
+        message: "",
       },
+      invalidPhone: "Introdueix un telèfon vàlid, per exemple 600 000 000 o +34 600 000 000.",
       invalidEmail: "Introdueix un correu vàlid, per exemple nom@despatx.cat.",
       tooLong: "Aquest camp admet un màxim de 255 caràcters.",
     },
@@ -296,12 +314,14 @@ function pushDataLayerEvent(event: Record<string, unknown>) {
   (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer?.push(event);
 }
 
-const INITIAL_VALUES: DemoFormValues = { fullName: "", email: "", company: "" };
+const INITIAL_VALUES: DemoFormValues = { fullName: "", email: "", phone: "", company: "", message: "" };
 
 const FIELD_INPUT_ID: Record<DemoFieldName, string> = {
   fullName: "name",
   email: "email",
+  phone: "phone",
   company: "company",
+  message: "message",
 };
 
 const CONSENT_INPUT_ID = "consent-processing-demo";
@@ -309,11 +329,13 @@ const CONSENT_INPUT_ID = "consent-processing-demo";
 type FormFieldConfig = {
   fieldName: DemoFieldName;
   inputId: string;
-  labelKey: "name" | "email" | "company";
-  type: "text" | "email";
-  placeholderKey?: "namePlaceholder" | "companyPlaceholder";
+  labelKey: "name" | "email" | "phone" | "company" | "message";
+  type: "text" | "email" | "tel" | "textarea";
+  placeholderKey?: "namePlaceholder" | "companyPlaceholder" | "phonePlaceholder" | "messagePlaceholder";
   placeholder?: string;
   autoComplete: string;
+  optional?: boolean;
+  maxLength?: number;
 };
 
 const FORM_FIELDS: readonly FormFieldConfig[] = [
@@ -334,12 +356,32 @@ const FORM_FIELDS: readonly FormFieldConfig[] = [
     autoComplete: "email",
   },
   {
+    fieldName: "phone",
+    inputId: FIELD_INPUT_ID.phone,
+    labelKey: "phone",
+    type: "tel",
+    placeholderKey: "phonePlaceholder",
+    autoComplete: "tel",
+    optional: true,
+    maxLength: DEMO_PHONE_MAX_LENGTH,
+  },
+  {
     fieldName: "company",
     inputId: FIELD_INPUT_ID.company,
     labelKey: "company",
     type: "text",
     placeholderKey: "companyPlaceholder",
     autoComplete: "organization",
+  },
+  {
+    fieldName: "message",
+    inputId: FIELD_INPUT_ID.message,
+    labelKey: "message",
+    type: "textarea",
+    placeholderKey: "messagePlaceholder",
+    autoComplete: "off",
+    optional: true,
+    maxLength: DEMO_MESSAGE_MAX_LENGTH,
   },
 ];
 
@@ -653,23 +695,43 @@ export function DemoClient() {
                           <div key={field.fieldName}>
                             <label htmlFor={field.inputId} className="block text-[14px] font-semibold text-ink mb-2">
                               {t[field.labelKey]}
+                              {field.optional && (
+                                <span className="ml-1.5 font-normal text-slate-400">({t.optional})</span>
+                              )}
                             </label>
-                            <input
-                              type={field.type}
-                              id={field.inputId}
-                              name={field.inputId}
-                              value={values[field.fieldName]}
-                              onChange={(changeEvent) => handleValueChange(field.fieldName, changeEvent.target.value)}
-                              onFocus={field.fieldName === "fullName" ? handleFormStarted : undefined}
-                              placeholder={field.placeholderKey ? t[field.placeholderKey] : field.placeholder}
-                              autoComplete={field.autoComplete}
-                              maxLength={DEMO_FIELD_MAX_LENGTH}
-                              required
-                              aria-required="true"
-                              aria-invalid={errorMessage ? "true" : "false"}
-                              aria-describedby={errorMessage ? errorId : undefined}
-                              className={`${INPUT_CLASS_NAME} ${errorMessage ? INPUT_INVALID_CLASS_NAME : INPUT_VALID_CLASS_NAME}`}
-                            />
+                            {field.type === "textarea" ? (
+                              <textarea
+                                id={field.inputId}
+                                name={field.inputId}
+                                value={values[field.fieldName]}
+                                onChange={(changeEvent) => handleValueChange(field.fieldName, changeEvent.target.value)}
+                                placeholder={field.placeholderKey ? t[field.placeholderKey] : field.placeholder}
+                                autoComplete={field.autoComplete}
+                                maxLength={field.maxLength ?? DEMO_FIELD_MAX_LENGTH}
+                                rows={2}
+                                aria-invalid={errorMessage ? "true" : "false"}
+                                aria-describedby={errorMessage ? errorId : undefined}
+                                className={`${INPUT_CLASS_NAME} resize-none ${errorMessage ? INPUT_INVALID_CLASS_NAME : INPUT_VALID_CLASS_NAME}`}
+                              />
+                            ) : (
+                              <input
+                                type={field.type}
+                                id={field.inputId}
+                                name={field.inputId}
+                                value={values[field.fieldName]}
+                                onChange={(changeEvent) => handleValueChange(field.fieldName, changeEvent.target.value)}
+                                onFocus={field.fieldName === "fullName" ? handleFormStarted : undefined}
+                                placeholder={field.placeholderKey ? t[field.placeholderKey] : field.placeholder}
+                                autoComplete={field.autoComplete}
+                                inputMode={field.type === "tel" ? "tel" : undefined}
+                                maxLength={field.maxLength ?? DEMO_FIELD_MAX_LENGTH}
+                                required={!field.optional}
+                                aria-required={field.optional ? undefined : "true"}
+                                aria-invalid={errorMessage ? "true" : "false"}
+                                aria-describedby={errorMessage ? errorId : undefined}
+                                className={`${INPUT_CLASS_NAME} ${errorMessage ? INPUT_INVALID_CLASS_NAME : INPUT_VALID_CLASS_NAME}`}
+                              />
+                            )}
                             {errorMessage && (
                               <p id={errorId} className="text-[13px] text-red-600 mt-1.5 leading-snug">
                                 {errorMessage}
