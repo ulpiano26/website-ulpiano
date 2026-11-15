@@ -46,6 +46,7 @@ type Tab = {
   bullets: string[]
   mockupLabel: string
   mockupVideo?: string
+  mockupPoster?: string
 }
 
 const tabs: Tab[] = [
@@ -75,6 +76,8 @@ const tabs: Tab[] = [
       'Alertas de plazo antes de que el problema llegue al cliente',
     ],
     mockupLabel: 'Motor Fiscal ISD',
+    mockupVideo: '/videos/asesorias.mp4',
+    mockupPoster: '/videos/asesorias-poster.jpg',
   },
   {
     id: 'notarias',
@@ -182,6 +185,7 @@ export default function ParaQuien() {
                 {tab.mockupVideo && isNearViewport ? (
                   <video
                     src={tab.mockupVideo}
+                    poster={tab.mockupPoster}
                     aria-label={tab.mockupLabel}
                     autoPlay
                     loop
