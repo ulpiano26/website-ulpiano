@@ -62,7 +62,8 @@ const tabs: Tab[] = [
       'Cada decisión del expediente queda registrada y es auditable',
     ],
     mockupLabel: 'Planificador Sucesorio',
-    mockupVideo: '/videos/planificador-sucesorio.mp4',
+    mockupVideo: '/videos/despachos.mp4',
+    mockupPoster: '/videos/despachos-poster.jpg',
   },
   {
     id: 'asesorias',
@@ -91,6 +92,8 @@ const tabs: Tab[] = [
       'Documentación centralizada y cifrada',
     ],
     mockupLabel: 'Panel de Expedientes',
+    mockupVideo: '/videos/notarias.mp4',
+    mockupPoster: '/videos/notarias-poster.jpg',
   },
 ]
 
