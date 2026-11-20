@@ -1,5 +1,5 @@
-export const CONSENT_TEXT_VERSION = "consent-2026-08-28-v2";
-export const PRIVACY_POLICY_VERSION = "privacidad-2026-08-28-v2";
+export const CONSENT_TEXT_VERSION = "consent-2026-11-20-v3";
+export const PRIVACY_POLICY_VERSION = "privacidad-2026-11-20-v3";
 
 export type FormId = "contact" | "demo" | "resource-download" | "newsletter";
 export type Locale = "es" | "ca";
@@ -48,7 +48,7 @@ export const CONSENT_TEXTS: Record<Locale, Record<FormId, ConsentCopy>> = {
     },
     newsletter: {
       processing:
-        "He leído y acepto la Política de Privacidad de Ulpiano y consiento el tratamiento de mis datos para recibir la newsletter. Recibiré un correo para confirmar la suscripción. Puedo darme de baja en cualquier momento desde el enlace incluido en cada envío.",
+        "He leído y acepto la Política de Privacidad de Ulpiano y consiento el tratamiento de mis datos para recibir la newsletter. Puedo darme de baja en cualquier momento desde el enlace incluido en cada envío.",
       marketing:
         "Acepto recibir por correo electrónico comunicaciones comerciales de Ulpiano sobre sus servicios y recursos. Puedo retirar mi consentimiento en cualquier momento.",
       privacyUrl: "/legal/privacidad",
@@ -82,7 +82,7 @@ export const CONSENT_TEXTS: Record<Locale, Record<FormId, ConsentCopy>> = {
     },
     newsletter: {
       processing:
-        "He llegit i accepto la Política de Privacitat d'Ulpiano i consento el tractament de les meves dades per rebre la newsletter. Rebré un correu per confirmar la subscripció. Em puc donar de baixa en qualsevol moment des de l'enllaç inclòs a cada tramesa.",
+        "He llegit i accepto la Política de Privacitat d'Ulpiano i consento el tractament de les meves dades per rebre la newsletter. Em puc donar de baixa en qualsevol moment des de l'enllaç inclòs a cada tramesa.",
       marketing:
         "Accepto rebre per correu electrònic comunicacions comercials d'Ulpiano sobre els seus serveis i recursos. Puc retirar el meu consentiment en qualsevol moment.",
       privacyUrl: "/ca/legal/privacitat",

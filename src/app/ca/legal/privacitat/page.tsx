@@ -27,7 +27,7 @@ export default function PrivacitatPage() {
   return (
     <LegalPage
       title="Política de Privacitat"
-      updatedLabel="Darrera actualització: 28 d'agost de 2026"
+      updatedLabel="Darrera actualització: 20 de novembre de 2026"
     >
       <h2>1. Responsable del tractament i contacte</h2>
       <p>El responsable del tractament de les dades personals regulades en aquesta política és:</p>
@@ -47,7 +47,8 @@ export default function PrivacitatPage() {
       <p>
         Aquesta política s'aplica <strong>únicament</strong> a les dades de visitants
         d'ulpiano.es, contactes comercials, sol·licitants de demostració, persones subscrites a la
-        newsletter i usuaris que descarreguin recursos des del lloc web.
+        newsletter, usuaris que descarreguin recursos des del lloc web i professionals que
+        contactin amb Ulpiano en fires i esdeveniments.
       </p>
       <p>
         Ulpiano actua com a responsable del tractament respecte d'aquestes dades, en els termes
@@ -71,8 +72,9 @@ export default function PrivacitatPage() {
           i seguint les instruccions documentades del despatx, d'acord amb l'article 28 RGPD; i
         </li>
         <li>
-          el tractament es regeix per l'Acord d'Encarregat de Tractament subscrit amb el despatx i
-          no per aquesta política.
+          el tractament es regeix per l'acord d'encàrrec del tractament de l'article 28.3 RGPD
+          que Ulpiano formalitza amb cada despatx en contractar la plataforma, i no per aquesta
+          política.
         </li>
       </ul>
       <p>
@@ -100,8 +102,7 @@ export default function PrivacitatPage() {
           <tr>
             <td>Sol·licitud de demostració</td>
             <td>
-              Nom, correu electrònic, nom del despatx i, si escau, càrrec i volum aproximat
-              d'expedients.
+              Nom, correu electrònic, nom del despatx i, de manera opcional, telèfon i comentari.
             </td>
             <td>
               Gestionar la sol·licitud, contactar amb el sol·licitant i organitzar o prestar la
@@ -121,8 +122,19 @@ export default function PrivacitatPage() {
             <td>Nom i correu electrònic.</td>
             <td>
               Trametre les edicions de la newsletter d'Ulpiano, amb continguts tecnicojurídics i
-              novetats de la plataforma. La subscripció es confirma mitjançant un segon correu
-              (doble opt-in).
+              novetats de la plataforma.
+            </td>
+          </tr>
+          <tr>
+            <td>Contactes en fires i esdeveniments</td>
+            <td>
+              Nom, càrrec, empresa i dades de contacte professional que figuren a l'acreditació de
+              l'esdeveniment o que la persona facilita a l'estand, i notes internes sobre la
+              conversa (per exemple, l'interès mostrat o el volum aproximat d'expedients).
+            </td>
+            <td>
+              Fer el seguiment de la conversa mantinguda amb Ulpiano a l'esdeveniment i, si escau,
+              organitzar una demostració.
             </td>
           </tr>
           <tr>
@@ -149,9 +161,8 @@ export default function PrivacitatPage() {
           <tr>
             <td>Evidència de consentiment</td>
             <td>
-              Identificador del registre, formulari, marca temporal, text i versió de la casella
-              acceptada, versió d'aquesta política, idioma, URL d'origen, adreça IP i dades
-              tècniques mínimes.
+              Formulari, data i hora, text i versió de la casella acceptada, versió d'aquesta
+              política, idioma, URL d'origen i adreça IP.
             </td>
             <td>
               Acreditar el consentiment prestat i la seva eventual retirada, d'acord amb
@@ -165,6 +176,15 @@ export default function PrivacitatPage() {
         de dades de l'article 9 RGPD. Us preguem que no les incloeu al camp de missatge. Si se'n
         reben, Ulpiano les podrà suprimir o limitar-ne el tractament quan no siguin necessàries
         per atendre la consulta.
+      </p>
+      <p>
+        <strong>Origen de les dades.</strong> Les dades s'obtenen directament de la persona
+        interessada: per mitjà dels formularis del lloc web o, en fires i esdeveniments, quan la
+        persona facilita la seva acreditació o les seves dades a l'estand d'Ulpiano.
+      </p>
+      <p>
+        Els camps marcats com a obligatoris a cada formulari són necessaris per atendre la
+        sol·licitud. Si no es faciliten, no serà possible tramitar-la.
       </p>
 
       <h2>4. Bases jurídiques</h2>
@@ -187,8 +207,7 @@ export default function PrivacitatPage() {
           <tr>
             <td>Subscripció a la newsletter</td>
             <td>
-              Consentiment, art. 6.1.a RGPD, i art. 21 LSSI. La subscripció es confirma
-              mitjançant un segon correu (doble opt-in).
+              Consentiment, art. 6.1.a RGPD, i art. 21 LSSI.
             </td>
           </tr>
           <tr>
@@ -198,6 +217,14 @@ export default function PrivacitatPage() {
             </td>
             <td>
               Execució d'un contracte o aplicació de mesures precontractuals, art. 6.1.b RGPD.
+            </td>
+          </tr>
+          <tr>
+            <td>Contactes en fires i esdeveniments</td>
+            <td>
+              Interès legítim d'Ulpiano a fer el seguiment d'una conversa professional iniciada
+              per la mateixa persona a l'esdeveniment, art. 6.1.f RGPD. La persona s'hi pot oposar
+              en qualsevol moment escrivint a privacidad@ulpiano.es.
             </td>
           </tr>
           <tr>
@@ -216,8 +243,12 @@ export default function PrivacitatPage() {
             <td>Analítica mitjançant Google Tag Manager i Google Analytics 4</td>
             <td>
               Consentiment, art. 6.1.a RGPD i art. 22.2 LSSI, atorgat mitjançant el panell de
-              preferències. Per defecte, el consentiment es manté denegat i les tecnologies
-              analítiques no exemptes no s'activen fins a la seva acceptació expressa.
+              preferències. Per defecte, el consentiment es manté denegat i no s'instal·len ni es
+              llegeixen cookies analítiques fins a la seva acceptació expressa. Mentre no
+              s'accepti, Google Tag Manager es carrega igualment i Google pot rebre senyals tècnics
+              sense cookies (per exemple, que s'ha visitat una pàgina i l'estat del
+              consentiment), que tracta de manera agregada; per a aquests senyals la base és
+              l'interès legítim d'Ulpiano a conèixer l'ús general del lloc, art. 6.1.f RGPD.
             </td>
           </tr>
           <tr>
@@ -270,6 +301,13 @@ export default function PrivacitatPage() {
             <td>
               <strong>24 mesos</strong> des de la darrera interacció, o fins a l'oposició o
               retirada del consentiment si és anterior.
+            </td>
+          </tr>
+          <tr>
+            <td>Contactes en fires i esdeveniments sense contractació posterior</td>
+            <td>
+              <strong>24 mesos</strong> des de la darrera interacció, o fins a l'oposició si és
+              anterior.
             </td>
           </tr>
           <tr>
@@ -358,7 +396,8 @@ export default function PrivacitatPage() {
               <strong>Google Tag Manager i Google Analytics 4</strong>
             </td>
             <td>
-              Gestió d'etiquetes i analítica web, únicament després del consentiment aplicable.
+              Gestió d'etiquetes i analítica web. Les cookies analítiques només s'instal·len
+              després del consentiment.
             </td>
             <td>
               Google Ireland Limited (Irlanda). Pot existir accés des de Google LLC (Estats Units)
@@ -370,10 +409,21 @@ export default function PrivacitatPage() {
               <strong>Google Workspace</strong>
             </td>
             <td>
-              Correu electrònic i ofimàtica corporativa, inclosa la gestió de les comunicacions
-              rebudes.
+              Correu electrònic i ofimàtica corporativa, inclosos els avisos interns de les
+              sol·licituds rebudes pels formularis i la gestió dels contactes de fires i
+              esdeveniments.
             </td>
             <td>Google Ireland Limited (Irlanda).</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Hostkey</strong>
+            </td>
+            <td>
+              Allotjament de l'eina de suport d'Ulpiano, on es registren les sol·licituds rebudes
+              pels formularis del lloc web.
+            </td>
+            <td>Hostkey B.V. (Països Baixos), en servidors situats a la Unió Europea.</td>
           </tr>
         </tbody>
       </LegalTable>
@@ -409,8 +459,13 @@ export default function PrivacitatPage() {
         </li>
       </ul>
       <p>
-        Alguns d'aquests proveïdors poden tractar dades des de fora de l'Espai Econòmic Europeu.
-        Per a qualsevol qüestió sobre aquest tractament, podeu escriure a privacidad@ulpiano.es.
+        <strong>Transferències internacionals.</strong> HubSpot, Vercel i Google poden tractar
+        dades des dels Estats Units. HubSpot, Inc., Vercel, Inc. i Google LLC estan certificades
+        en el Marc de Privacitat de Dades UE-EUA (EU-U.S. Data Privacy Framework), que compta amb
+        una decisió d'adequació de la Comissió Europea de 10 de juliol de 2023 (art. 45 RGPD). A
+        més, els seus acords de tractament de dades incorporen les clàusules contractuals tipus
+        aprovades per la Comissió Europea (art. 46.2.c RGPD). Podeu demanar més informació sobre
+        aquestes garanties a privacidad@ulpiano.es.
       </p>
 
       <h2>7. Drets de les persones interessades</h2>
@@ -460,11 +515,12 @@ export default function PrivacitatPage() {
 
       <h2>10. Cookies i tecnologies equivalents</h2>
       <p>
-        El lloc utilitza Google Tag Manager, Google Analytics 4 i cookies de màrqueting de Google
-        i HubSpot{" "}
-        <strong>únicament quan la persona usuària presta el seu consentiment</strong> a la
-        categoria corresponent per mitjà del panell de preferències. El Consent Mode v2 es
-        configura amb el consentiment denegat per defecte.
+        El lloc utilitza Google Tag Manager i Google Analytics 4. Les cookies analítiques i, si
+        escau, les de màrqueting s'instal·len{" "}
+        <strong>únicament quan la persona usuària presta el seu consentiment</strong> per mitjà
+        del panell de preferències. El Consent Mode v2 es configura amb el consentiment denegat
+        per defecte; mentre no s'accepti, Google pot rebre els senyals tècnics sense cookies
+        descrits a l'apartat 4.
       </p>
       <p>
         La informació detallada sobre cookies, proveïdors, finalitats, durades i mecanismes

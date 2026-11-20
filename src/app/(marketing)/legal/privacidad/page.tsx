@@ -26,7 +26,7 @@ export default function PrivacidadPage() {
   return (
     <LegalPage
       title="Política de Privacidad"
-      updatedLabel="Última actualización: 28 de agosto de 2026"
+      updatedLabel="Última actualización: 20 de noviembre de 2026"
     >
       <h2>1. Responsable del tratamiento y contacto</h2>
       <p>El responsable del tratamiento de los datos personales regulados en esta política es:</p>
@@ -46,7 +46,8 @@ export default function PrivacidadPage() {
       <p>
         Esta política se aplica <strong>únicamente</strong> a los datos de visitantes de
         ulpiano.es, contactos comerciales, solicitantes de demostración, personas suscritas a la
-        newsletter y usuarios que descarguen recursos desde el sitio web.
+        newsletter, usuarios que descarguen recursos desde el sitio web y profesionales que
+        contacten con Ulpiano en ferias y eventos.
       </p>
       <p>
         Ulpiano actúa como responsable del tratamiento respecto de esos datos, en los términos de
@@ -70,8 +71,9 @@ export default function PrivacidadPage() {
           y siguiendo las instrucciones documentadas del despacho, conforme al artículo 28 RGPD; y
         </li>
         <li>
-          el tratamiento se rige por el Acuerdo de Encargado de Tratamiento suscrito con el
-          despacho y no por esta política.
+          el tratamiento se rige por el acuerdo de encargo del tratamiento del artículo 28.3
+          RGPD que Ulpiano formaliza con cada despacho al contratar la plataforma, y no por esta
+          política.
         </li>
       </ul>
       <p>
@@ -99,8 +101,8 @@ export default function PrivacidadPage() {
           <tr>
             <td>Solicitud de demostración</td>
             <td>
-              Nombre, correo electrónico, nombre del despacho y, en su caso, cargo y volumen
-              aproximado de expedientes.
+              Nombre, correo electrónico, nombre del despacho y, de forma opcional, teléfono y
+              comentario.
             </td>
             <td>
               Gestionar la solicitud, contactar con el solicitante y organizar o prestar la
@@ -120,8 +122,19 @@ export default function PrivacidadPage() {
             <td>Nombre y correo electrónico.</td>
             <td>
               Remitir las ediciones de la newsletter de Ulpiano, con contenidos técnico-jurídicos y
-              novedades de la plataforma. La suscripción se confirma mediante un segundo correo
-              (doble opt-in).
+              novedades de la plataforma.
+            </td>
+          </tr>
+          <tr>
+            <td>Contactos en ferias y eventos</td>
+            <td>
+              Nombre, cargo, empresa y datos de contacto profesional que figuran en la acreditación
+              del evento o que la persona facilita en el stand, y notas internas sobre la
+              conversación (por ejemplo, interés mostrado o volumen aproximado de expedientes).
+            </td>
+            <td>
+              Dar seguimiento a la conversación mantenida con Ulpiano en el evento y, en su caso,
+              organizar una demostración.
             </td>
           </tr>
           <tr>
@@ -146,9 +159,8 @@ export default function PrivacidadPage() {
           <tr>
             <td>Evidencia de consentimiento</td>
             <td>
-              Identificador del registro, formulario, marca temporal, texto y versión de la
-              casilla aceptada, versión de esta política, idioma, URL de origen, dirección IP y
-              datos técnicos mínimos.
+              Formulario, fecha y hora, texto y versión de la casilla aceptada, versión de esta
+              política, idioma, URL de origen y dirección IP.
             </td>
             <td>
               Acreditar el consentimiento prestado y su eventual retirada, conforme al artículo 7.1
@@ -162,6 +174,15 @@ export default function PrivacidadPage() {
         de datos del artículo 9 RGPD. Se ruega no incluirlas en el campo de mensaje. Si se
         reciben, Ulpiano podrá suprimirlas o limitar su tratamiento cuando no sean necesarias para
         atender la consulta.
+      </p>
+      <p>
+        <strong>Origen de los datos.</strong> Los datos se obtienen directamente de la persona
+        interesada: a través de los formularios del sitio web o, en ferias y eventos, cuando la
+        persona facilita su acreditación o sus datos en el stand de Ulpiano.
+      </p>
+      <p>
+        Los campos marcados como obligatorios en cada formulario son necesarios para atender la
+        solicitud. Si no se facilitan, no será posible tramitarla.
       </p>
 
       <h2>4. Bases jurídicas</h2>
@@ -184,8 +205,7 @@ export default function PrivacidadPage() {
           <tr>
             <td>Suscripción a la newsletter</td>
             <td>
-              Consentimiento, art. 6.1.a RGPD, y art. 21 LSSI. La suscripción se confirma
-              mediante un segundo correo (doble opt-in).
+              Consentimiento, art. 6.1.a RGPD, y art. 21 LSSI.
             </td>
           </tr>
           <tr>
@@ -195,6 +215,14 @@ export default function PrivacidadPage() {
             </td>
             <td>
               Ejecución de un contrato o aplicación de medidas precontractuales, art. 6.1.b RGPD.
+            </td>
+          </tr>
+          <tr>
+            <td>Contactos en ferias y eventos</td>
+            <td>
+              Interés legítimo de Ulpiano en dar seguimiento a una conversación profesional
+              iniciada por la propia persona en el evento, art. 6.1.f RGPD. La persona puede
+              oponerse en cualquier momento escribiendo a privacidad@ulpiano.es.
             </td>
           </tr>
           <tr>
@@ -213,8 +241,12 @@ export default function PrivacidadPage() {
             <td>Analítica mediante Google Tag Manager y Google Analytics 4</td>
             <td>
               Consentimiento, art. 6.1.a RGPD y art. 22.2 LSSI, otorgado mediante el panel de
-              preferencias. Por defecto el consentimiento se mantiene denegado y las tecnologías
-              analíticas no exentas no se activan hasta su aceptación expresa.
+              preferencias. Por defecto el consentimiento se mantiene denegado y no se instalan ni
+              leen cookies analíticas hasta su aceptación expresa. Mientras no se acepte, Google
+              Tag Manager se carga igualmente y Google puede recibir señales técnicas sin cookies
+              (por ejemplo, que se ha visitado una página y el estado del consentimiento), que
+              trata de forma agregada; para estas señales la base es el interés legítimo de
+              Ulpiano en conocer el uso general del sitio, art. 6.1.f RGPD.
             </td>
           </tr>
           <tr>
@@ -267,6 +299,13 @@ export default function PrivacidadPage() {
             <td>
               <strong>24 meses</strong> desde la última interacción, o hasta la oposición o
               retirada del consentimiento si es anterior.
+            </td>
+          </tr>
+          <tr>
+            <td>Contactos en ferias y eventos sin contratación posterior</td>
+            <td>
+              <strong>24 meses</strong> desde la última interacción, o hasta la oposición si es
+              anterior.
             </td>
           </tr>
           <tr>
@@ -355,7 +394,8 @@ export default function PrivacidadPage() {
               <strong>Google Tag Manager y Google Analytics 4</strong>
             </td>
             <td>
-              Gestión de etiquetas y analítica web, únicamente tras el consentimiento aplicable.
+              Gestión de etiquetas y analítica web. Las cookies analíticas solo se instalan tras
+              el consentimiento.
             </td>
             <td>
               Google Ireland Limited (Irlanda). Puede existir acceso desde Google LLC (Estados
@@ -367,10 +407,21 @@ export default function PrivacidadPage() {
               <strong>Google Workspace</strong>
             </td>
             <td>
-              Correo electrónico y ofimática corporativa, incluida la gestión de las
-              comunicaciones recibidas.
+              Correo electrónico y ofimática corporativa, incluidos los avisos internos de las
+              solicitudes recibidas por los formularios y la gestión de los contactos de ferias y
+              eventos.
             </td>
             <td>Google Ireland Limited (Irlanda).</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Hostkey</strong>
+            </td>
+            <td>
+              Alojamiento de la herramienta de soporte de Ulpiano, donde se registran las
+              solicitudes recibidas por los formularios del sitio web.
+            </td>
+            <td>Hostkey B.V. (Países Bajos), en servidores situados en la Unión Europea.</td>
           </tr>
         </tbody>
       </LegalTable>
@@ -405,9 +456,13 @@ export default function PrivacidadPage() {
         </li>
       </ul>
       <p>
-        Algunos de estos proveedores pueden tratar datos desde fuera del Espacio Económico
-        Europeo. Para cualquier cuestión sobre este tratamiento, puede escribir a
-        privacidad@ulpiano.es.
+        <strong>Transferencias internacionales.</strong> HubSpot, Vercel y Google pueden tratar
+        datos desde Estados Unidos. HubSpot, Inc., Vercel, Inc. y Google LLC están certificadas en
+        el Marco de Privacidad de Datos UE-EE. UU. (EU-U.S. Data Privacy Framework), que cuenta
+        con una decisión de adecuación de la Comisión Europea de 10 de julio de 2023 (art. 45
+        RGPD). Además, sus acuerdos de tratamiento de datos incorporan las cláusulas
+        contractuales tipo aprobadas por la Comisión Europea (art. 46.2.c RGPD). Puede pedir más
+        información sobre estas garantías en privacidad@ulpiano.es.
       </p>
 
       <h2>7. Derechos de las personas interesadas</h2>
@@ -458,11 +513,12 @@ export default function PrivacidadPage() {
 
       <h2>10. Cookies y tecnologías equivalentes</h2>
       <p>
-        El sitio utiliza Google Tag Manager, Google Analytics 4 y cookies de marketing de Google
-        y HubSpot{" "}
-        <strong>únicamente cuando la persona usuaria presta su consentimiento</strong> a la
-        categoría correspondiente a través del panel de preferencias. El Consent Mode v2 se
-        configura con el consentimiento denegado por defecto.
+        El sitio utiliza Google Tag Manager y Google Analytics 4. Las cookies analíticas y, en su
+        caso, las de marketing se instalan{" "}
+        <strong>únicamente cuando la persona usuaria presta su consentimiento</strong> a través
+        del panel de preferencias. El Consent Mode v2 se configura con el consentimiento denegado
+        por defecto; mientras no se acepte, Google puede recibir las señales técnicas sin cookies
+        descritas en el apartado 4.
       </p>
       <p>
         La información detallada sobre cookies, proveedores, finalidades, duraciones y
